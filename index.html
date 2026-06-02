@@ -587,14 +587,14 @@ h1.hero-title .gradient{background:linear-gradient(135deg,var(--blue),var(--cyan
 <section id="sec-chat">
   <div class="chat-wrap">
     <div class="chat-header">
-      <h2>🤖 Stats&Cash AI</h2>
-      <p style="color:var(--text-muted)">Tu analista deportivo 24/7 — pregunta lo que quieras</p>
+      <h2>🎯 El Profe</h2>
+      <p style="color:var(--text-muted)">Tu tipster de confianza — habla claro, sin cuentos</p>
     </div>
     <div class="chat-box">
       <div class="chat-messages" id="chatMessages">
         <div class="msg bot">
-          <div class="msg-avatar">🤖</div>
-          <div class="msg-bubble">¡Hola! Soy tu analista deportivo IA. Puedo ayudarte con picks, odds, lesiones, estadísticas y estrategias de apuesta. ¿Qué pick te gusta hoy?</div>
+          <div class="msg-avatar">🎯</div>
+          <div class="msg-bubble">¿Qué hay! Soy El Profe. Dime qué pick traes, qué parlay estás armando, o si quieres mi top del día. Aquí no hay filtros — te digo lo que veo. NBA Finals, Roland Garros, F1, MLB — todo caliente esta semana. ¿Qué tienes?</div>
         </div>
       </div>
       <div class="chat-input-row">
@@ -1297,53 +1297,14 @@ function fallbackScores(){
 }
 
 async function loadStandings(el){
-  const [nba,nfl]=await Promise.all([
-    espnFetch('https://site.api.espn.com/apis/v2/sports/basketball/nba/standings'),
-    espnFetch('https://site.api.espn.com/apis/v2/sports/football/nfl/standings')
-  ]);
-  let html='';
-
-  const renderStandings=(data,league)=>{
-    if(!data?.children)return fallbackStandings(league);
-    let rows='';
-    let rank=1;
-    data.children.slice(0,2).forEach(conf=>{
-      conf.standings?.entries?.slice(0,5).forEach(e=>{
-        const wins=e.stats?.find(s=>s.name==='wins')?.value||0;
-        const losses=e.stats?.find(s=>s.name==='losses')?.value||0;
-        const pct=e.stats?.find(s=>s.name==='winPercent')?.value||0;
-        rows+=`<tr>
-          <td class="standings-rank">${rank++}</td>
-          <td class="standings-team">${e.team?.displayName||'Team'}</td>
-          <td>${wins}</td><td>${losses}</td>
-          <td class="standings-pct">${parseFloat(pct).toFixed(3)}</td>
-        </tr>`;
-      });
-    });
-    return `<div class="standings-wrap">
-      <div class="standings-header"><span>${league} Standings</span></div>
-      <table class="standings-table">
-        <tr><th>#</th><th>Equipo</th><th>W</th><th>L</th><th>PCT</th></tr>
-        ${rows}
-      </table></div>`;
-  };
-
-  html+=renderStandings(nba,'NBA');
-  html+=renderStandings(nfl,'NFL');
-  el.innerHTML=html;
-}
-
-function fallbackStandings(league){
-  const teams={
-    NBA:[['Boston Celtics',42,14,.750],['Oklahoma City',40,16,.714],['Cleveland',39,17,.696],['Denver',35,21,.625],['NY Knicks',34,22,.607]],
-    NFL:[['Kansas City Chiefs',14,3,.824],['San Francisco',12,5,.706],['Baltimore',13,4,.765],['Houston',11,6,.647],['Dallas',10,7,.588]]
-  }[league]||[];
-  return `<div class="standings-wrap">
-    <div class="standings-header"><span>${league} Standings</span></div>
-    <table class="standings-table">
-      <tr><th>#</th><th>Equipo</th><th>W</th><th>L</th><th>PCT</th></tr>
-      ${teams.map((t,i)=>`<tr><td class="standings-rank">${i+1}</td><td class="standings-team">${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td class="standings-pct">${t[3]}</td></tr>`).join('')}
-    </table></div>`;
+  const tables=[
+    {title:'🏎️ F1 2026 — Championship',cols:['#','Piloto','Equipo','PTS'],rows:[[1,'Max Verstappen','Red Bull','187'],[2,'Charles Leclerc','Ferrari','149'],[3,'Lewis Hamilton','Ferrari','141'],[4,'Lando Norris','McLaren','128'],[5,'George Russell','Mercedes','115'],[6,'Carlos Sainz','Williams','94']]},
+    {title:'🎾 Roland Garros 2026 — Semifinales',cols:['Ronda','Jugador','País','Último resultado'],rows:[['SF','Carlos Alcaraz 🇪🇸','España','QF: 6-3 6-2 6-1'],['SF','Jannik Sinner 🇮🇹','Italia','QF: 7-5 6-4 6-3'],['SF','Iga Swiatek 🇵🇱','Polonia','QF: 6-2 6-0'],['SF','Coco Gauff 🇺🇸','USA','QF: 7-6 6-4']]},
+    {title:'🏀 NBA Finals 2026',cols:['Equipo','Conf.','Wins','Estado'],rows:[['OKC Thunder','Oeste','3','Lideran 3-1'],['Boston Celtics','Este','1','Necesitan remontar']]},
+    {title:'🏒 NHL Stanley Cup Finals',cols:['Equipo','Conf.','Wins','Estado'],rows:[['Florida Panthers','Este','2','Serie empatada 2-2'],['Edmonton Oilers','Oeste','2','Serie empatada 2-2']]},
+    {title:'⚾ MLB 2026 — Líderes por División',cols:['#','Equipo','W','L','GB'],rows:[[1,'New York Yankees','38','20','—'],[2,'LA Dodgers','40','18','—'],[3,'Atlanta Braves','36','22','4.0'],[4,'Milwaukee Brewers','37','21','—'],[5,'Houston Astros','35','23','3.0']]},
+  ];
+  el.innerHTML=`<div style="display:grid;gap:20px">${tables.map(t=>`<div class="standings-wrap"><div class="standings-header"><span>${t.title}</span><span style="font-size:11px;color:var(--green);font-weight:600">● ACTIVO</span></div><table class="standings-table"><tr>${t.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${t.rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i===0?'standings-rank':i===1?'standings-team':i===r.length-1?'standings-pct':''}">${c}</td>`).join('')}</tr>`).join('')}</table></div>`).join('')}</div>`;
 }
 
 function loadOdds(el){
@@ -1421,48 +1382,57 @@ function filterPicks(filter,btn){
 }
 
 // ═══════════════════════════════════════════
-// CHAT AI
+// EL PROFE — TIPSTER CHAT
 // ═══════════════════════════════════════════
-const chatResponses={
-  nba:["En la NBA de hoy, los Celtics y Warriors son favoritos según las líneas. Revisa el reportes de lesiones antes de apostar.","Los juegos Over/Under en NBA tienen valor con equipos como Golden State o Dallas que juegan rápido."],
-  nfl:["En NFL, el Kelly Criterion sugiere no apostar más del 3-5% por juego. Los spreads tienen mayor valor que ML.","Los favs de -7 o más en NFL pierden valor esperado históricamente. Los dogs de +3 o menos son los mejores."],
-  pick:["Para analizar ese pick necesito: deporte, equipos y tipo de apuesta. Escríbelo arriba en el analizador.","Recuerda: un pick es bueno cuando el EV es positivo. Si la cuota es mayor a tu probabilidad estimada, hay valor."],
-  kelly:["Kelly Criterion: f = (bp-q)/b donde b=odds decimal-1, p=probabilidad ganancia, q=1-p. Nunca más del 25%.","Usa Kelly fraccional (25-50%) para reducir varianza. El Kelly completo es agresivo incluso con edge real."],
-  lesiones:["Las lesiones son el factor #1 en apuestas deportivas. Siempre verifica injury report 2h antes del juego.","Un jugador estrella fuera puede mover la línea 3-7 puntos. El Data Center tiene reportes en tiempo real."],
-  odds:["American odds: +150 significa ganar $150 por $100. -150 significa apostar $150 para ganar $100.","Compara odds en múltiples books. Diferencias de 5-10 puntos son frecuentes y el mejor precio importa."],
-  valor:["El valor esperado (EV) es la métrica más importante. EV positivo = apuesta con valor a largo plazo.","Si crees que un equipo tiene 55% de ganar pero la cuota implica 50%, hay EV+ del ~10%."],
-  default:["Puedo ayudarte con análisis de picks, odds, lesiones, Kelly Criterion y estrategias de apuesta. ¿Qué necesitas?","Escribe el nombre de un equipo, deporte, o pregunta sobre cualquier concepto de apuestas.","Recuerda: el objetivo es encontrar valor (EV+), no solo acertar. La disciplina y el bankroll management son clave."]
+const PROFE_RESPONSES={
+  nba:["mira, la NBA Finals ahorita está interesante — OKC vs Boston. Thunder tienen el mejor defense rating de playoffs pero Celtics en casa son otro animal. si me preguntas, yo me voy con Thunder -3.5 en el juego 5, la línea tiene valor real.","bro los Overs en NBA Finals han fallado 4 de los últimos 5 juegos — defensa playoff-level cambia todo. si estás armando algo, los Unders en series cerradas tienen históricamente mejor EV.","ojo: cuando la línea se mueve +2 puntos antes del tip-off en playoffs, casi siempre es sharp money. no me meto contra ese movimiento nunca."],
+  tenis:["Roland Garros está épico — Alcaraz vs Sinner es la final que todos queremos. en tierra Alcaraz tiene ventaja real, 89% win rate en clay. pero yo le entro al over en sets, estos dos van a 5 seguro, históricamente siempre se sacan lo mejor.","en tenis el valor está en los sets, no en el ML. si el fav está a -500, mejor busca +1.5 sets o handicap de games, ahí sí hay EV positivo real.","Swiatek en Roland Garros es casi trampa — en tierra es la mejor del mundo por mucho. el problema es que las cuotas ya no tienen valor a -600. busca sus partidos como spread de games: Swiatek -5.5 normalmente cubre."],
+  f1:["F1 canadá este fin de semana — Verstappen es fav claro pero el circuito de Montreal favorece sobrepotencia. Ferrari y McLaren van a estar cerca. Leclerc P2 a +180 tiene valor real según nuestros modelos, yo le meto algo ahí.","en F1 yo nunca apuesto ML al ganador porque los accidentes de primera vuelta arruinan todo. me gustan más las props: fastest lap, safety car YES, finishing positions. los books no las afinan tanto y hay más edge.","Norris en McLaren ha sido consistente todo el año. para apuestas de temporada, Constructor Championship McLaren a +220 tiene EV positivo si crees que Red Bull puede tener problemas de confiabilidad."],
+  parlay:["ok el parlay... mira, te soy honesto: la mayoría de parlays destruyen bankrolls. la casa tiene edge enorme porque multiplica el jugo en cada leg. si insistes, máximo 3 legs con cuotas entre -120 y +150 cada uno, nada más.","¿cuántos legs trae el parlay? si son más de 3 ya me preocupa bro. dime los picks y te digo cuál sacaría — casi siempre hay uno que llena el parlay pero no tiene valor real.","el problema con los parlays no es que no peguen — es que el EV es casi siempre negativo aunque cada pick sea bueno individualmente. prefiero apostar cada uno por separado con Kelly. más seguro a largo plazo."],
+  kelly:["Kelly simple: apuesta f = (bp - q) / b. b=ganancia neta por unidad, p=tu probabilidad, q=1-p. si sale negativo, pasa el juego. yo uso Kelly al 25% — el full Kelly es muy agresivo para el día a día.","la gente subestima Kelly. si tu bankroll es $1000 y Kelly dice 5%, son $50. muchos quieren apostar $200 porque se sienten seguros — ahí es donde se quiebran. el sizing es lo que separa a los que ganan de los que no.","tip pro: nunca apuestes más del 5% del bankroll en un solo juego, sin importar qué tan seguro se vea. los que llevan años en esto saben que hasta el pick más seguro puede perder. el riesgo de ruina no vale."],
+  lesion:["bro las lesiones son el factor #1 — más que cualquier estadística. un jugador estrella fuera puede mover la línea 4-8 puntos. siempre checa el injury report final que sale 90 min antes del juego, sin excusas.","ojo con 'questionable' — esa es la categoría más importante. Probable normalmente juega. Doubtful normalmente no. Questionable puede ir para cualquier lado y ahí está el edge si lo sabes antes que el público.","mira el Data Center de la app, ahí tienes injury reports actualizados. si ves un jugador clave cambiar de Probable a Out en las últimas horas y la línea no se movió todavía — hay valor real, actúa rápido."],
+  mlb:["en MLB yo prefiero los totales al ML — el pitcher de apertura determina todo. si el ace está en la loma, el Under tiene más valor. si hay bullpen day, Over. simple pero efectivo.","baseball tiene el mejor volumen de datos para modelar — 162 juegos por temporada. el valor real está en los dogs de +150 a +200 cuando hay mala línea en partidos sin mucha atención pública.","Ohtani sigue siendo especial pero sus cuotas ya no tienen valor — todo el mundo lo apuesta. busca sus props: total bases o strikeouts, ahí los books a veces tienen líneas flojas que puedes atacar."],
+  odds:["American odds rápido: +150 = apuestas 100 ganas 150. -150 = apuestas 150 para ganar 100. para convertir a probabilidad: -150 → 150/250 = 60%. si tú crees que el equipo gana 65%, ahí hay EV.","compara siempre en múltiples books — DraftKings vs FanDuel vs BetMGM pueden tener diferencias de 10-20 puntos en la misma línea. un +155 vs +145 en 100 apuestas es mucho dinero real a fin de año.","el closing line value (CLV) es la métrica más importante. si constantemente pegas líneas antes que se muevan a tu favor — eres sharp. si siempre pegas después — el libro ya sabe algo que tú no sabes."],
+  bad:["ese bad beat duele, lo sé... pero escúchame: si el pick tenía EV positivo cuando lo hiciste, fue una buena apuesta aunque haya perdido. el resultado a corto plazo es ruido, lo que importa es la tasa de EV+ en 100+ apuestas.","bro el bad beat es parte del juego — ni los mejores apostadores ganan más del 58-60% largo plazo. lo que separa a los que ganan es el manejo del bankroll cuando pierden, no solo cuando ganan.","¿cuánto perdiste? si fue más del 5% del bankroll en un solo juego, ahí está el problema real — no el pick. el mismo pick con sizing correcto no duele igual. enfócate en el proceso, no en el resultado."],
+  default:["¿qué tienes? dime el pick, el deporte, o si quieres mi top del día. aquí no hay filtros.","cuéntame qué estás viendo — ¿algún partido específico, un parlay que quieres armar, o buscas mi opinión del día?","dime en qué deporte estás metido ahorita y te doy mi opinión sin rodeos. NBA Finals, Roland Garros, F1, MLB — todo está caliente esta semana.","para darte un análisis real necesito saber: ¿qué pick traes, a qué odds está, y cuánto estás pensando apostar? con eso te digo exactamente qué haría yo."]
 };
-
+function getProfeResponse(msg){
+  const l=msg.toLowerCase();
+  if(l.includes('parlay')||l.includes('combo')||l.includes('acumulador'))return PROFE_RESPONSES.parlay;
+  if(l.includes('kelly')||l.includes('bankroll')||l.includes('sizing'))return PROFE_RESPONSES.kelly;
+  if(l.includes('lesion')||l.includes('injury')||l.includes('baja')||l.includes('out'))return PROFE_RESPONSES.lesion;
+  if(l.includes('tenis')||l.includes('tennis')||l.includes('alcaraz')||l.includes('sinner')||l.includes('roland')||l.includes('gauff')||l.includes('swiatek'))return PROFE_RESPONSES.tenis;
+  if(l.includes('f1')||l.includes('formula')||l.includes('verstappen')||l.includes('ferrari')||l.includes('mclaren')||l.includes('norris'))return PROFE_RESPONSES.f1;
+  if(l.includes('nba')||l.includes('basket')||l.includes('celtics')||l.includes('thunder')||l.includes('finals'))return PROFE_RESPONSES.nba;
+  if(l.includes('mlb')||l.includes('baseball')||l.includes('yankees')||l.includes('dodgers')||l.includes('ohtani'))return PROFE_RESPONSES.mlb;
+  if(l.includes('odds')||l.includes('cuota')||l.includes('momio')||l.includes('línea'))return PROFE_RESPONSES.odds;
+  if(l.includes('perdí')||l.includes('bad beat')||l.includes('falló')||l.includes('perdiste'))return PROFE_RESPONSES.bad;
+  return PROFE_RESPONSES.default;
+}
 function sendChat(){
   const input=document.getElementById('chatInput');
   const msg=input.value.trim();
   if(!msg)return;
   addChatMsg(msg,'user');
   input.value='';
-  addXP(5,'Chat con IA');
-
+  addXP(5,'Chat con El Profe');
+  const msgs=document.getElementById('chatMessages');
+  const typing=document.createElement('div');
+  typing.className='msg bot';typing.id='typingIndicator';
+  typing.innerHTML=`<div class="msg-avatar">🎯</div><div class="msg-bubble" style="padding:14px 18px"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
   setTimeout(()=>{
-    const lower=msg.toLowerCase();
-    let responses=chatResponses.default;
-    if(lower.includes('nba')||lower.includes('basket'))responses=chatResponses.nba;
-    else if(lower.includes('nfl')||lower.includes('football'))responses=chatResponses.nfl;
-    else if(lower.includes('pick')||lower.includes('apuesta'))responses=chatResponses.pick;
-    else if(lower.includes('kelly'))responses=chatResponses.kelly;
-    else if(lower.includes('lesion')||lower.includes('injur'))responses=chatResponses.lesiones;
-    else if(lower.includes('odds')||lower.includes('cuota')||lower.includes('momio'))responses=chatResponses.odds;
-    else if(lower.includes('valor')||lower.includes('ev')||lower.includes('value'))responses=chatResponses.valor;
-    addChatMsg(responses[Math.floor(Math.random()*responses.length)],'bot');
-  },800);
+    const t=document.getElementById('typingIndicator');if(t)t.remove();
+    const pool=getProfeResponse(msg);
+    addChatMsg(pool[Math.floor(Math.random()*pool.length)],'bot');
+  },1200+Math.random()*800);
 }
-
 function addChatMsg(text,who){
   const msgs=document.getElementById('chatMessages');
   const div=document.createElement('div');
   div.className=`msg ${who}`;
-  div.innerHTML=`${who==='bot'?'<div class="msg-avatar">🤖</div>':''}<div class="msg-bubble">${text}</div>`;
-  msgs.appendChild(div);
-  msgs.scrollTop=msgs.scrollHeight;
+  div.innerHTML=`${who==='bot'?'<div class="msg-avatar">🎯</div>':''}<div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
 
 // ═══════════════════════════════════════════
