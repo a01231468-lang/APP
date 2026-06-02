@@ -1012,45 +1012,132 @@ async function loadDCTab(tab){
   else if(tab==='picks') loadPicks(el);
 }
 
-async function loadNews(el){
-  const data=await espnFetch('https://now.core.api.espn.com/v1/sports/news?limit=20');
-  if(data&&data.feed&&data.feed.length){
-    const icons={'basketball':'🏀','football':'🏈','baseball':'⚾','hockey':'🏒','soccer':'⚽','tennis':'🎾','golf':'⛳'};
-    el.innerHTML=`<div class="news-grid">${data.feed.slice(0,15).map(n=>{
-      const sport=n.sport?.[0]||'';
-      const icon=icons[sport]||'📰';
-      const time=n.published?new Date(n.published).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}):'';
-      return `<div class="news-item">
-        <div class="news-sport-icon">${icon}</div>
-        <div class="news-text">
-          <div class="news-headline">${n.headline||n.title||'Sin título'}</div>
-          <div class="news-meta"><span>ESPN</span> · ${time} · ${sport||'Sports'}</div>
-        </div>
-      </div>`;
-    }).join('')}</div>`;
-  } else {
-    el.innerHTML=fallbackNews();
-  }
+// ═══════════════════════════════════════════
+// NEWS — RSS REAL-TIME FEEDS
+// ═══════════════════════════════════════════
+const RSS_FEEDS=[
+  {url:'https://www.espn.com/espn/rss/news',source:'ESPN',icon:'📰'},
+  {url:'https://www.espn.com/espn/rss/soccer/news',source:'ESPN Soccer',icon:'⚽'},
+  {url:'https://www.espn.com/espn/rss/nba/news',source:'ESPN NBA',icon:'🏀'},
+  {url:'https://www.espn.com/espn/rss/mlb/news',source:'ESPN MLB',icon:'⚾'},
+  {url:'http://feeds.bbci.co.uk/sport/rss.xml',source:'BBC Sport',icon:'🌍'},
+];
+const RSS2JSON='https://api.rss2json.com/v1/api.json?rss_url=';
+let newsRefreshTimer=null;
+
+function timeAgo(dateStr){
+  if(!dateStr)return'hace un momento';
+  const diff=(Date.now()-new Date(dateStr).getTime())/60000;
+  if(diff<1)return'hace un momento';
+  if(diff<60)return`hace ${Math.round(diff)} min`;
+  if(diff<1440)return`hace ${Math.round(diff/60)}h`;
+  return`hace ${Math.round(diff/1440)}d`;
 }
 
-function fallbackNews(){
-  const news=[
-    {icon:'🏀',headline:'LeBron James regresa al lineup para el juego de esta noche',sport:'NBA',time:'hace 12 min'},
-    {icon:'🏈',headline:'Patrick Mahomes confirma que jugará a pesar de molestia en tobillo',sport:'NFL',time:'hace 34 min'},
-    {icon:'⚽',headline:'Real Madrid confirma alineación para el Clásico del sábado',sport:'Soccer',time:'hace 1h'},
-    {icon:'🏀',headline:'Steph Curry logra su sexto triple-doble de la temporada',sport:'NBA',time:'hace 2h'},
-    {icon:'🏈',headline:'Trade deadline: tres WRs disponibles en el mercado',sport:'NFL',time:'hace 3h'},
-    {icon:'⚾',headline:'Shohei Ohtani firma extensión histórica con Dodgers',sport:'MLB',time:'hace 4h'},
-    {icon:'🎾',headline:'Djokovic avanza sin problemas a cuartos de final',sport:'Tennis',time:'hace 5h'},
-  ];
-  return `<div class="news-grid">${news.map(n=>`
-    <div class="news-item">
-      <div class="news-sport-icon">${n.icon}</div>
+function renderNewsItems(items,source,icon){
+  return items.slice(0,5).map(n=>{
+    const img=n.thumbnail&&n.thumbnail.startsWith('http')?
+      `<img src="${n.thumbnail}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display='none'">`:
+      `<div class="news-sport-icon">${icon}</div>`;
+    const ago=timeAgo(n.pubDate);
+    const desc=n.description?n.description.replace(/<[^>]+>/g,'').slice(0,120)+'…':'';
+    return `<a class="news-item" href="${n.link||'#'}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+      ${img}
       <div class="news-text">
-        <div class="news-headline">${n.headline}</div>
-        <div class="news-meta"><span>ESPN</span> · ${n.time} · ${n.sport}</div>
+        <div class="news-headline">${n.title||'Sin título'}</div>
+        ${desc?`<div style="font-size:12px;color:var(--text-muted);margin:4px 0;line-height:1.5">${desc}</div>`:''}
+        <div class="news-meta"><span>${source}</span> · ${ago}</div>
       </div>
-    </div>`).join('')}</div>`;
+    </a>`;
+  }).join('');
+}
+
+async function fetchRSSFeed(feed){
+  try{
+    const r=await fetch(`${RSS2JSON}${encodeURIComponent(feed.url)}&count=5`,{signal:AbortSignal.timeout(6000)});
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    if(d.status==='ok'&&d.items?.length)return{items:d.items,source:feed.source,icon:feed.icon};
+  }catch(e){console.warn('RSS failed:',feed.url)}
+  return null;
+}
+
+async function loadNews(el){
+  // Show skeleton
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text-muted)" id="newsLastUpdate">Cargando noticias en tiempo real...</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite"></div>
+        <span style="font-size:11px;color:var(--green);font-weight:600">LIVE FEED</span>
+      </div>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      ${Array(6).fill(`<div class="news-item" style="opacity:.3">
+        <div class="news-sport-icon" style="background:rgba(255,255,255,.05)"></div>
+        <div style="flex:1"><div style="height:14px;background:rgba(255,255,255,.06);border-radius:4px;margin-bottom:8px"></div>
+        <div style="height:10px;background:rgba(255,255,255,.04);border-radius:4px;width:60%"></div></div>
+      </div>`).join('')}
+    </div>`;
+
+  // Fetch all feeds in parallel
+  const results=await Promise.all(RSS_FEEDS.map(f=>fetchRSSFeed(f)));
+  const valid=results.filter(Boolean);
+
+  if(valid.length===0){
+    // fallback to ESPN API
+    const data=await espnFetch('https://now.core.api.espn.com/v1/sports/news?limit=20');
+    if(data?.feed?.length){
+      const icons={'basketball':'🏀','football':'🏈','baseball':'⚾','hockey':'🏒','soccer':'⚽','tennis':'🎾','golf':'⛳'};
+      document.getElementById('newsGrid').innerHTML=data.feed.slice(0,12).map(n=>{
+        const sport=n.sport?.[0]||'';
+        return `<div class="news-item">
+          <div class="news-sport-icon">${icons[sport]||'📰'}</div>
+          <div class="news-text">
+            <div class="news-headline">${n.headline||n.title||'Sin título'}</div>
+            <div class="news-meta"><span>ESPN</span> · ${timeAgo(n.published)} · ${sport||'Sports'}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } else {
+    // Interleave items from all feeds
+    const allItems=[];
+    const maxPerFeed=Math.ceil(15/valid.length);
+    valid.forEach(f=>{
+      f.items.slice(0,maxPerFeed).forEach(item=>allItems.push({...item,_source:f.source,_icon:f.icon}));
+    });
+    // Sort by date descending
+    allItems.sort((a,b)=>new Date(b.pubDate)-new Date(a.pubDate));
+
+    document.getElementById('newsGrid').innerHTML=allItems.slice(0,15).map(n=>{
+      const img=n.thumbnail&&n.thumbnail.startsWith('http')?
+        `<img src="${n.thumbnail}" style="width:72px;height:54px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display='none'">`:
+        `<div class="news-sport-icon">${n._icon}</div>`;
+      const desc=n.description?n.description.replace(/<[^>]+>/g,'').slice(0,110)+'…':'';
+      return `<a class="news-item" href="${n.link||'#'}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+        ${img}
+        <div class="news-text">
+          <div class="news-headline">${n.title||'Sin título'}</div>
+          ${desc?`<div style="font-size:12px;color:var(--text-muted);margin:4px 0;line-height:1.5">${desc}</div>`:''}
+          <div class="news-meta"><span>${n._source}</span> · ${timeAgo(n.pubDate)}</div>
+        </div>
+      </a>`;
+    }).join('');
+  }
+
+  // Update timestamp
+  const upd=document.getElementById('newsLastUpdate');
+  if(upd)upd.textContent=`Actualizado: ${new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})} · Próxima actualización en 5 min`;
+
+  // Auto-refresh every 5 minutes
+  if(newsRefreshTimer)clearTimeout(newsRefreshTimer);
+  newsRefreshTimer=setTimeout(()=>{
+    dcLoaded['news']=false;
+    if(document.getElementById('dc-news').classList.contains('active')){
+      loadDCTab('news');
+    }
+  },300000);
 }
 
 async function loadInjuries(el){
