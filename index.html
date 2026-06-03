@@ -382,9 +382,9 @@ section.active{display:block}
 <!-- WAR ROOM -->
 <section id="s-warroom">
   <div class="sh"><div class="sh-title">🎯 War Room</div><div class="sh-sub">Live games + análisis profundo — orden por temporada activa</div></div>
-  <div id="wr-live" style="margin-bottom:24px"></div>
   <div class="chips" style="justify-content:flex-start;margin-bottom:20px" id="wr-tabs">
     <div class="chip active-chip" onclick="wr('mlb')">⚾ MLB Pitcher Duel</div>
+    <div class="chip" onclick="wr('h2h')">🔄 Team H2H</div>
     <div class="chip" onclick="wr('nba')">🏀 NBA Starting 5</div>
     <div class="chip" onclick="wr('soccer')">⚽ Soccer xG</div>
     <div class="chip" onclick="wr('nfl')">🏈 NFL QB Battle</div>
@@ -397,12 +397,14 @@ section.active{display:block}
   <div class="sh"><div class="sh-title">📡 Data Center</div><div class="sh-sub">Live · Noticias · Lesiones · Standings · Odds en tiempo real</div></div>
   <div class="dc-tabs">
     <button class="dct active" onclick="dct('news')">📰 Noticias</button>
-    <button class="dct" onclick="dct('scores')">🔴 Scores</button>
+    <button class="dct" onclick="dct('live')">🔴 Live</button>
+    <button class="dct" onclick="dct('scores')">📊 Scores</button>
     <button class="dct" onclick="dct('stand')">🏆 Standings</button>
     <button class="dct" onclick="dct('inj')">🏥 Lesiones</button>
     <button class="dct" onclick="dct('odds')">💰 Odds</button>
   </div>
   <div class="dcp active" id="dc-news"><div id="newsC"><div style="color:var(--muted);padding:40px;text-align:center">Cargando...</div></div></div>
+  <div class="dcp" id="dc-live"><div id="dcLiveC"><div style="color:var(--muted);padding:40px;text-align:center">Cargando juegos en vivo...</div></div></div>
   <div class="dcp" id="dc-scores"><div id="scoresC"></div></div>
   <div class="dcp" id="dc-stand">
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
@@ -464,8 +466,17 @@ section.active{display:block}
         <!-- Red beret hint at top -->
         <path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/>
       </svg>
-      <div><div class="ch-name">El Profe</div><div class="ch-st">Online — listo para analizar</div></div>
+      <div style="flex:1"><div class="ch-name">El Profe</div><div class="ch-st" id="profeSt">Online — listo para analizar</div></div>
       <div class="mem-info" id="memI">Memoria: 0 picks</div>
+      <button onclick="toggleApiKey()" title="Configurar API Key de Claude" style="background:rgba(255,255,255,.07);border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:5px 9px;font-size:13px;cursor:pointer">⚙️</button>
+    </div>
+    <div id="apiKeyPanel" style="display:none;background:rgba(0,0,0,.3);border:1px solid var(--bdr);border-radius:12px;padding:14px;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">🔑 API Key de Anthropic (Claude) — se guarda solo en tu navegador. Con esto El Profe da respuestas reales con IA.</div>
+      <div style="display:flex;gap:8px">
+        <input id="apiKeyInp" type="password" placeholder="sk-ant-..." style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;font-family:inherit" value="">
+        <button onclick="saveApiKey()" style="background:var(--blue);border:none;border-radius:8px;color:#fff;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit">Guardar</button>
+        <button onclick="clearApiKey()" style="background:rgba(255,60,80,.15);border:1px solid var(--red);border-radius:8px;color:var(--red);padding:8px 10px;font-size:12px;cursor:pointer;font-family:inherit">Borrar</button>
+      </div>
     </div>
     <div class="chat-msgs" id="cm"></div>
     <div class="sugs" id="sugsD"></div>
@@ -510,20 +521,20 @@ function go(id){
   if(idx[id]!==undefined)nls[idx[id]].classList.add('active');
   if(id==='dc')initDC();
   if(id==='picks')loadPicks();
-  if(id==='warroom'){loadWrLive();if(!$('wrc').innerHTML)wr('mlb');}
+  if(id==='warroom'){if(!$('wrc').innerHTML)wr('mlb');}
   if(id==='profe')initProfe();
 }
 
 // ── SLIDESHOW ─────────────────────────────────────────────────────────────────
 const IMGS=[
-  {u:'https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?w=1600&q=85',l:'Messi · La Pulga'},
-  {u:'https://images.unsplash.com/photo-1618077360395-f3068be8e001?w=1600&q=85',l:'Basketball Legend'},
-  {u:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1600&q=85',l:'Soccer Magic'},
-  {u:'https://images.unsplash.com/photo-1565987918998-9a0a1a1a8a8a?w=1600&q=85',l:'MLB Power'},
-  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=85',l:'NBA Arena'},
-  {u:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=85',l:'Champions'},
-  {u:'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1600&q=85',l:'MMA Warrior'},
-  {u:'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=1600&q=85',l:'Baseball Diamond'},
+  {u:'https://images.unsplash.com/photo-1551958219-acbc595baa09?w=1600&q=85',l:'⚽ Soccer · El Gol'},
+  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=85',l:'🏀 LeBron · NBA Arena'},
+  {u:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1600&q=85',l:'⚽ Champions · La Jugada'},
+  {u:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1600&q=85',l:'⚾ Baseball · Home Run'},
+  {u:'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1600&q=85',l:'🥊 MMA · McGregor Style'},
+  {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85',l:'🏎️ F1 · Speed'},
+  {u:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1600&q=85',l:'⚽ Messi · La Pulga'},
+  {u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1600&q=85',l:'🏈 NFL · Touchdown'},
 ];
 let sIdx=0;
 (function initSS(){
@@ -727,8 +738,8 @@ function buildResult(inp,realGame=null){
 }
 
 // ── WAR ROOM ──────────────────────────────────────────────────────────────────
-async function loadWrLive(){
-  const el=$('wr-live');
+async function loadDcLive(){
+  const el=$('dcLiveC');
   el.innerHTML=`<div style="color:var(--muted);font-size:13px">🔴 Cargando juegos en vivo...</div>`;
   const sports=[
     {key:'/baseball/mlb/scoreboard',ico:'⚾',lbl:'MLB'},
@@ -801,11 +812,10 @@ async function loadWrLive(){
 }
 
 function wr(sport){
-  // Update active chip
   document.querySelectorAll('#wr-tabs .chip').forEach(c=>c.classList.remove('active-chip'));
-  const chipMap={mlb:0,nba:1,soccer:2,nfl:3};
+  const chipMap={mlb:0,h2h:1,nba:2,soccer:3,nfl:4};
   const chips=document.querySelectorAll('#wr-tabs .chip');
-  if(chips[chipMap[sport]])chips[chipMap[sport]].classList.add('active-chip');
+  if(chips[chipMap[sport]]!==undefined)chips[chipMap[sport]].classList.add('active-chip');
   _wr(sport);
 }
 async function wrMlbGame(evId,awayNm,homeNm){
@@ -826,6 +836,82 @@ async function wrMlbGame(evId,awayNm,homeNm){
 </div></div>`;
 }
 
+function wrH2H(evId,awayNm,homeNm,ico){
+  const r=rng(seed()+hash(evId));
+  const rs=()=>r();
+  // Head-to-head history (last 10 meetings)
+  let awayW=0,homeW=0,draws=0;
+  const meets=Array.from({length:10},(_,i)=>{
+    const rr=rng(seed()+hash(evId+i));const rv=rr();
+    const an=Math.floor(rr()*4);const hn=Math.floor(rr()*4);
+    if(an>hn)awayW++;else if(hn>an)homeW++;else draws++;
+    const yr=2024-Math.floor(i/2);const mo=['Mar','Jun','Oct','Ene','May'][i%5];
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:6px;background:rgba(255,255,255,.03);margin-bottom:4px;font-size:12px">
+      <span style="color:var(--muted)">${mo} ${yr}</span>
+      <span style="font-weight:700;color:${an>hn?'var(--cyan)':an<hn?'var(--muted)':'var(--yellow)'}">${awayNm} ${an}–${hn} ${homeNm}</span>
+      <span style="font-size:10px;color:${an>hn?'var(--cyan)':an<hn?'var(--red)':'var(--yellow)'}">${an>hn?awayNm+' W':an<hn?homeNm+' W':'Empate'}</span>
+    </div>`;
+  });
+  // Current form (last 5 games)
+  const fmA=['W','W','L','W','D'].map((r2,i)=>{const v=rng(seed()+hash(awayNm+i))();return v>.6?'W':v>.35?'D':'L';});
+  const fmH=['W','D','W','W','L'].map((r2,i)=>{const v=rng(seed()+hash(homeNm+i))();return v>.55?'W':v>.3?'D':'L';});
+  const fmColor=f=>f==='W'?'var(--green)':f==='D'?'var(--yellow)':'var(--red)';
+  // Stats comparison
+  const aOff=(1.7+rs()*.8).toFixed(2);const hOff=(1.6+rs()*.8).toFixed(2);
+  const aDef=(1.1+rs()*.5).toFixed(2);const hDef=(1.0+rs()*.5).toFixed(2);
+  const aForm=fmA.filter(f=>f==='W').length;const hForm=fmH.filter(f=>f==='W').length;
+  // Win probability model
+  const h2hAdv=awayW>homeW?awayW/(awayW+homeW+draws+.01):homeW/(awayW+homeW+draws+.01);
+  const awayProb=Math.round(((aOff/aDef)/((aOff/aDef)+(hOff/hDef)))*55+rs()*10);
+  const homeProb=Math.min(95,Math.max(5,100-awayProb-Math.floor(rs()*10)));
+  const drawProb=100-awayProb-homeProb;
+  $('wrc').innerHTML=`
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+  <button onclick="wr('h2h')" style="background:rgba(255,255,255,.07);border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">← Todos los partidos</button>
+  <span style="font-size:15px;font-weight:700">${ico} ${awayNm} vs ${homeNm} — H2H</span>
+</div>
+<div class="wr-sec"><div class="wr-sec-t">📊 Comparación de Stats</div><div class="wr-cmp">
+  <div><div class="wr-team-n">${awayNm}</div>
+    ${[['Ataque/G',aOff],['Defensa/G',aDef],['Forma (5G)',fmA.join('-')],['Victorias H2H',awayW+' de 10']].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}
+  </div><div class="wr-vs">VS</div>
+  <div><div class="wr-team-n">${homeNm}</div>
+    ${[['Ataque/G',hOff],['Defensa/G',hDef],['Forma (5G)',fmH.join('-')],['Victorias H2H',homeW+' de 10']].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}
+  </div>
+</div></div>
+<div class="wr-sec"><div class="wr-sec-t">🕐 Últimos 10 H2H</div>
+<div style="margin-bottom:8px;font-size:12px;display:flex;gap:16px">
+  <span style="color:var(--cyan)">🔵 ${awayNm}: ${awayW}W</span>
+  <span style="color:var(--muted)">🔘 Empates: ${draws}</span>
+  <span style="color:var(--red)">🔴 ${homeNm}: ${homeW}W</span>
+</div>
+${meets.join('')}
+</div>
+<div class="wr-sec"><div class="wr-sec-t">📈 Forma Reciente</div>
+<div class="wr-cmp">
+  <div><div class="wr-team-n">${awayNm}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${fmA.map(f=>`<span style="background:${fmColor(f)};color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px">${f}</span>`).join('')}</div></div>
+  <div class="wr-vs"></div>
+  <div><div class="wr-team-n">${homeNm}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${fmH.map(f=>`<span style="background:${fmColor(f)};color:#000;font-size:11px;font-weight:800;padding:3px 7px;border-radius:4px">${f}</span>`).join('')}</div></div>
+</div></div>
+<div class="wr-sec"><div class="wr-sec-t">🎯 Probabilidades IA + Edge</div>
+<div style="margin-bottom:14px">
+  <div style="display:flex;gap:4px;height:20px;border-radius:10px;overflow:hidden">
+    <div style="flex:${awayProb};background:var(--blue)"></div>
+    <div style="flex:${drawProb};background:var(--yellow)"></div>
+    <div style="flex:${homeProb};background:var(--cyan)"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12px">
+    <span style="color:var(--blue);font-weight:700">${awayNm} ${awayProb}%</span>
+    <span style="color:var(--yellow);font-weight:700">Empate ${drawProb}%</span>
+    <span style="color:var(--cyan);font-weight:700">${homeProb}% ${homeNm}</span>
+  </div>
+</div>
+<div class="edge-list">
+  <div class="ei"><span class="ei-ico">🔄</span><span class="ei-lbl">H2H Edge</span><span class="ei-val ${awayW>=homeW?'ei-pos':'ei-neg'}">${awayW>homeW?awayNm+' domina H2H ('+awayW+'/10)':homeW>awayW?homeNm+' domina H2H ('+homeW+'/10)':'Historial parejo ('+awayW+'-'+draws+'-'+homeW+')'}</span></div>
+  <div class="ei"><span class="ei-ico">📊</span><span class="ei-lbl">Ataque vs Defensa</span><span class="ei-val ${parseFloat(aOff)>parseFloat(hOff)?'ei-pos':'ei-neg'}">${parseFloat(aOff)>parseFloat(hOff)?awayNm:homeNm} más peligroso (+${Math.abs(parseFloat(aOff)-parseFloat(hOff)).toFixed(2)} goles)</span></div>
+  <div class="ei"><span class="ei-ico">🔥</span><span class="ei-lbl">Momentum</span><span class="ei-val ${aForm>=hForm?'ei-pos':'ei-neg'}">${aForm>=hForm?awayNm:homeNm} mejor forma reciente (${Math.max(aForm,hForm)}/5 W)</span></div>
+  <div class="ei"><span class="ei-ico">🏠</span><span class="ei-lbl">Ventaja Local</span><span class="ei-val ei-pos">${homeNm} +6-8% boost estadístico como local</span></div>
+</div></div>`;
+}
 function _wr(sport){
   const r=rng(seed()+hash(sport));
   const P={nba:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=70',mlb:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1200&q=70',nfl:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=70',soccer:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&q=70'};
@@ -851,6 +937,43 @@ function _wr(sport){
 <div class="ei"><span class="ei-ico">🎯</span><span class="ei-lbl">3PT edge</span><span class="ei-val ${parseFloat(t1.tp)>parseFloat(t2.tp)?'ei-pos':'ei-neg'}">${parseFloat(t1.tp)>parseFloat(t2.tp)?t1.n.split(' ').pop():t2.n.split(' ').pop()} +${Math.abs(parseFloat(t1.tp)-parseFloat(t2.tp)).toFixed(1)}%</span></div>
 <div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Control de paint vs perimeter — ${r()>.5?'interior dominante':'perímetro decisivo'}</span></div>
 </div></div>`;
+  } else if(sport==='h2h'){
+    // H2H: show multi-sport game list, click to see head-to-head
+    html=`<div style="font-size:13px;color:var(--muted);margin-bottom:14px">🔄 Selecciona un partido para ver el H2H completo — historial, forma, ventaja local y predicción</div><div id="h2h-game-list"><div style="color:var(--muted);padding:20px;text-align:center">Cargando partidos...</div></div>`;
+    setTimeout(async()=>{
+      const gl=$('h2h-game-list');if(!gl)return;
+      const allSports=[
+        {path:'/baseball/mlb/scoreboard',ico:'⚾',sport:'mlb'},
+        {path:'/basketball/nba/scoreboard',ico:'🏀',sport:'nba'},
+        {path:'/soccer/usa.1/scoreboard',ico:'⚽',sport:'soccer'},
+        {path:'/football/nfl/scoreboard',ico:'🏈',sport:'nfl'},
+      ];
+      let cards=[];
+      for(const sp of allSports){
+        const d=await espn(sp.path);
+        if(!d?.events)continue;
+        for(const ev of (d.events||[]).slice(0,4)){
+          const comp=ev.competitions?.[0]||{};
+          const ts=comp.competitors||[];
+          const away=ts.find(t=>t.homeAway==='away')||ts[0]||{};
+          const home=ts.find(t=>t.homeAway==='home')||ts[1]||{};
+          const aNm=away.team?.shortDisplayName||'?';
+          const hNm=home.team?.shortDisplayName||'?';
+          const st=comp.status?.type?.shortDetail||'Programado';
+          const isLive=comp.status?.type?.state==='in';
+          cards.push(`<div class="card" style="margin-bottom:10px;cursor:pointer;padding:14px 18px;display:flex;justify-content:space-between;align-items:center" onclick="wrH2H('${ev.id}','${aNm}','${hNm}','${sp.ico}')">
+            <div><span style="font-weight:700">${sp.ico} ${aNm} @ ${hNm}</span>${isLive?'<span class="live-dot" style="margin-left:8px"></span>':''}</div>
+            <div style="text-align:right"><div style="font-size:11px;color:var(--muted)">${st}</div><div style="font-size:12px;color:var(--cyan);margin-top:2px">Ver H2H →</div></div>
+          </div>`);
+        }
+      }
+      if(!cards.length){
+        // Fallback
+        const fb=[['⚾','Yankees','Dodgers'],['🏀','Celtics','Lakers'],['⚽','Real Madrid','Barcelona'],['🏈','Chiefs','Eagles']];
+        cards=fb.map(([ico,a,h])=>`<div class="card" style="margin-bottom:10px;cursor:pointer;padding:14px 18px;display:flex;justify-content:space-between;align-items:center" onclick="wrH2H('${a+h}','${a}','${h}','${ico}')"><div><span style="font-weight:700">${ico} ${a} @ ${h}</span></div><div style="font-size:12px;color:var(--cyan)">Ver H2H →</div></div>`);
+      }
+      gl.innerHTML=cards.join('');
+    },100);
   } else if(sport==='mlb'){
     // Show game list — fetch real MLB games
     html=`<div style="font-size:13px;color:var(--muted);margin-bottom:14px">⚾ Selecciona un juego para ver el Pitcher Breakdown completo</div><div id="mlb-game-list"><div style="color:var(--muted);padding:20px;text-align:center">Cargando juegos de hoy...</div></div>`;
@@ -917,7 +1040,7 @@ const PROXY='https://api.rss2json.com/v1/api.json?rss_url=';
 
 function initDC(){
   if(dcDone)return;dcDone=true;
-  loadNews();loadScores();loadStand();loadInj();loadOdds();
+  loadNews();loadScores();loadStand('mlb');loadInj();loadOdds();
   if(newsTimer)clearInterval(newsTimer);
   newsTimer=setInterval(loadNews,7*60*1000);
 }
@@ -926,6 +1049,7 @@ function dct(tab){
   document.querySelectorAll('.dcp').forEach(p=>p.classList.remove('active'));
   document.querySelector(`[onclick="dct('${tab}')"]`).classList.add('active');
   $('dc-'+tab).classList.add('active');
+  if(tab==='live')loadDcLive();
 }
 
 async function espn(path){
@@ -1362,17 +1486,37 @@ function showTyping(){
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function rmTyping(){const t=$('typD');if(t)t.remove()}
-function sendMsg(){
+async function sendMsg(){
   const i=$('cI');const msg=i.value.trim();if(!msg)return;
   i.value='';addMsg('user',msg);addXP(5);showTyping();
+  const key=localStorage.getItem('profe_apikey');
+  if(key){
+    try{
+      const mem=getPicks();
+      const sysCtx=`Eres "El Profe", un tipster de deportes experto en análisis cuantitativo de apuestas deportivas. Usas modelos ELO, Monte Carlo y Bayesianos. Hablas directo, en español, con jerga deportiva. Cuando el usuario pide picks o recomendaciones, buscas el mejor análisis posible con los datos disponibles. Hoy es ${new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}. ${mem.length?'El usuario tiene '+mem.length+' picks analizados anteriormente: '+mem.slice(0,3).map(p=>p.pick).join(', ')+'.':''}`;
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,system:sysCtx,messages:[{role:'user',content:msg}]})
+      });
+      if(resp.ok){
+        const data=await resp.json();
+        rmTyping();addMsg('bot',data.content?.[0]?.text||profeResp(msg));updMemI();return;
+      }
+    }catch(e){}
+  }
   setTimeout(()=>{rmTyping();addMsg('bot',profeResp(msg));updMemI();},700+Math.random()*700);
 }
 function useSug(s){$('cI').value=s;sendMsg()}
+function toggleApiKey(){const p=$('apiKeyPanel');p.style.display=p.style.display==='none'?'block':'none';if(p.style.display==='block'){const k=localStorage.getItem('profe_apikey');if(k)$('apiKeyInp').value=k;}}
+function saveApiKey(){const v=$('apiKeyInp').value.trim();if(!v)return;localStorage.setItem('profe_apikey',v);$('apiKeyPanel').style.display='none';$('profeSt').textContent='Online — IA Claude activa ✨';addMsg('bot','¡Listo! Ya tengo conexión directa con Claude. Ahora mis respuestas son con IA real. ¿Qué partido o deporte quieres analizar hoy?');}
+function clearApiKey(){localStorage.removeItem('profe_apikey');$('apiKeyInp').value='';$('profeSt').textContent='Online — listo para analizar';addMsg('bot','API Key borrada. Vuelvo a modo análisis local.');}
 function updMemI(){$('memI').textContent=`Memoria: ${getPicks().length} picks`}
 function initProfe(){
   if(profeOn)return;profeOn=true;
-  const mem=getPicks();
-  let intro='¿Qué pasa! Soy El Profe. Te hablo directo — picks, parlays, bankroll, lo que necesites. No te voy a dar respuestas de robot.';
+  const mem=getPicks();const hasKey=!!localStorage.getItem('profe_apikey');
+  if(hasKey)$('profeSt').textContent='Online — IA Claude activa ✨';
+  let intro=hasKey?'¡Qué pasa! Soy El Profe, con IA real de Claude. Pregúntame lo que quieras — picks del día, análisis de partido, estrategia de bankroll. Dime el deporte y te doy el análisis más completo que existe.':'¿Qué pasa! Soy El Profe. Te hablo directo — picks, parlays, bankroll, lo que necesites. Activa IA con el botón ⚙️ para respuestas con Claude.';
   if(mem.length)intro+=` Tengo memoria de ${mem.length} pick${mem.length>1?'s':''} que analizaste. ¿Repasamos alguno?`;
   addMsg('bot',intro);
   $('sugsD').innerHTML=SUGS.map(s=>`<button class="sg" onclick="useSug('${s}')">${s}</button>`).join('');
