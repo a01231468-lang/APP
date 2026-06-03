@@ -1,0 +1,24 @@
+{
+  "name": "stats-cash-ai",
+  "version": "1.0.0",
+  "description": "Stats & Cash AI - Sports Analytics Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "echo \"No tests configured\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a01231468-lang/APP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a01231468-lang/APP/issues"
+  },
+  "homepage": "https://github.com/a01231468-lang/APP#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
