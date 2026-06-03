@@ -383,11 +383,8 @@ section.active{display:block}
 <section id="s-warroom">
   <div class="sh"><div class="sh-title">🎯 War Room</div><div class="sh-sub">Live games + análisis profundo — orden por temporada activa</div></div>
   <div class="chips" style="justify-content:flex-start;margin-bottom:20px" id="wr-tabs">
-    <div class="chip active-chip" onclick="wr('mlb')">⚾ MLB Pitcher Duel</div>
-    <div class="chip" onclick="wr('h2h')">🔄 Team H2H</div>
-    <div class="chip" onclick="wr('nba')">🏀 NBA Starting 5</div>
-    <div class="chip" onclick="wr('soccer')">⚽ Soccer xG</div>
-    <div class="chip" onclick="wr('nfl')">🏈 NFL QB Battle</div>
+    <div class="chip active-chip" onclick="wr('h2h')">🔄 Team H2H</div>
+    <div class="chip" onclick="wr('mlb')">⚾ MLB Pitcher Duel</div>
   </div>
   <div id="wrc"></div>
 </section>
@@ -400,7 +397,6 @@ section.active{display:block}
     <button class="dct" onclick="dct('live')">🔴 Live</button>
     <button class="dct" onclick="dct('scores')">📊 Scores</button>
     <button class="dct" onclick="dct('stand')">🏆 Standings</button>
-    <button class="dct" onclick="dct('inj')">🏥 Lesiones</button>
     <button class="dct" onclick="dct('odds')">💰 Odds</button>
   </div>
   <div class="dcp active" id="dc-news"><div id="newsC"><div style="color:var(--muted);padding:40px;text-align:center">Cargando...</div></div></div>
@@ -417,7 +413,6 @@ section.active{display:block}
     </div>
     <div id="standC"></div>
   </div>
-  <div class="dcp" id="dc-inj"><div id="injC"></div></div>
   <div class="dcp" id="dc-odds"><div id="oddsC"></div></div>
 </section>
 
@@ -466,16 +461,15 @@ section.active{display:block}
         <!-- Red beret hint at top -->
         <path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/>
       </svg>
-      <div style="flex:1"><div class="ch-name">El Profe</div><div class="ch-st" id="profeSt">Online — listo para analizar</div></div>
+      <div style="flex:1"><div class="ch-name">El Profe</div><div class="ch-st" id="profeSt">Online</div></div>
       <div class="mem-info" id="memI">Memoria: 0 picks</div>
-      <button onclick="toggleApiKey()" title="Configurar API Key de Claude" style="background:rgba(255,255,255,.07);border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:5px 9px;font-size:13px;cursor:pointer">⚙️</button>
+      <button onclick="toggleApiKey()" title="Configurar" style="background:transparent;border:none;color:rgba(255,255,255,.2);padding:4px 6px;font-size:12px;cursor:pointer">⚙</button>
     </div>
-    <div id="apiKeyPanel" style="display:none;background:rgba(0,0,0,.3);border:1px solid var(--bdr);border-radius:12px;padding:14px;margin-bottom:10px">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">🔑 API Key de Anthropic (Claude) — se guarda solo en tu navegador. Con esto El Profe da respuestas reales con IA.</div>
+    <div id="apiKeyPanel" style="display:none;background:rgba(0,0,0,.3);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="display:flex;gap:8px">
-        <input id="apiKeyInp" type="password" placeholder="sk-ant-..." style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;font-family:inherit" value="">
-        <button onclick="saveApiKey()" style="background:var(--blue);border:none;border-radius:8px;color:#fff;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit">Guardar</button>
-        <button onclick="clearApiKey()" style="background:rgba(255,60,80,.15);border:1px solid var(--red);border-radius:8px;color:var(--red);padding:8px 10px;font-size:12px;cursor:pointer;font-family:inherit">Borrar</button>
+        <input id="apiKeyInp" type="password" placeholder="sk-ant-api-key..." style="flex:1;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;font-family:inherit">
+        <button onclick="saveApiKey()" style="background:var(--blue);border:none;border-radius:8px;color:#fff;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit">OK</button>
+        <button onclick="clearApiKey()" style="background:transparent;border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:7px 10px;font-size:12px;cursor:pointer;font-family:inherit">✕</button>
       </div>
     </div>
     <div class="chat-msgs" id="cm"></div>
@@ -521,20 +515,20 @@ function go(id){
   if(idx[id]!==undefined)nls[idx[id]].classList.add('active');
   if(id==='dc')initDC();
   if(id==='picks')loadPicks();
-  if(id==='warroom'){if(!$('wrc').innerHTML)wr('mlb');}
+  if(id==='warroom'){if(!$('wrc').innerHTML)wr('h2h');}
   if(id==='profe')initProfe();
 }
 
 // ── SLIDESHOW ─────────────────────────────────────────────────────────────────
 const IMGS=[
-  {u:'https://images.unsplash.com/photo-1551958219-acbc595baa09?w=1600&q=85',l:'⚽ Soccer · El Gol'},
-  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=85',l:'🏀 LeBron · NBA Arena'},
-  {u:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1600&q=85',l:'⚽ Champions · La Jugada'},
-  {u:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1600&q=85',l:'⚾ Baseball · Home Run'},
-  {u:'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1600&q=85',l:'🥊 MMA · McGregor Style'},
-  {u:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85',l:'🏎️ F1 · Speed'},
-  {u:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1600&q=85',l:'⚽ Messi · La Pulga'},
-  {u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1600&q=85',l:'🏈 NFL · Touchdown'},
+  {u:'https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=1600&q=85',l:'⚽ Messi · Argentina'},
+  {u:'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=1600&q=85',l:'🏀 NBA · Arena'},
+  {u:'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1600&q=85',l:'⚾ Baseball · Diamante'},
+  {u:'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1600&q=85',l:'⚽ Soccer · Gol'},
+  {u:'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1600&q=85',l:'🥊 MMA · Octágono'},
+  {u:'https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?w=1600&q=85',l:'🏈 NFL · Touchdown'},
+  {u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1600&q=85',l:'🏎️ F1 · Velocidad'},
+  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=85',l:'🏀 Basketball · Dunking'},
 ];
 let sIdx=0;
 (function initSS(){
@@ -594,7 +588,109 @@ async function analyze(){
   };next();
 }
 
+// Detect player prop: "LeBron over 28.5 pts", "Ohtani over 7 strikeouts", etc.
+function detectProp(inp){
+  const lo=inp.toLowerCase();
+  const ouM=lo.match(/\b(over|under|o\/|u\/|ov |un )\s*(\d+\.?\d*)/i)||lo.match(/(\d+\.?\d*)\s*(over|under)/i);
+  if(!ouM)return null;
+  const lineM=inp.match(/(\d+\.?\d*)/);
+  if(!lineM)return null;
+  const line=parseFloat(lineM[1]);
+  const statMap={
+    'pts':['pts','puntos','points','point','ptos'],'strikeouts':['strikeout','strikeouts','ponches','ks','k s'],'hits':['hits','hit','imparables','sencillo'],'hr':['hr','home run','homerun','jonrón'],'ast':['ast','assists','asistencias','asist'],'reb':['reb','rebounds','rebotes','rebote'],'yds':['yds','yards','yardas'],'goals':['goals','goles','gol'],'3s':['3s','threes','triples','tres','3pt'],'saves':['saves','atajadas'],'inn':['innings','inn'],'k/9':['k/9','k9'],'era':['era'],'whip':['whip']};
+  let statKey='pts';
+  for(const [k,aliases] of Object.entries(statMap)){if(aliases.some(a=>lo.includes(a))){statKey=k;break;}}
+  const isOver=lo.includes('over')||lo.includes('ov ')||/\d\s*o\//.test(lo);
+  // Player name = everything before the number or over/under keyword
+  const beforeLine=inp.slice(0,inp.search(/\d|over|under/i)).trim().replace(/[,\s-]+$/,'');
+  const playerName=beforeLine.length>2?beforeLine:inp.replace(/over|under|\d+\.?\d*/gi,'').trim().replace(/[,\s-]+$/,'').replace(/^[,\s-]+/,'');
+  if(playerName.length<2)return null;
+  return{playerName,line,stat:statKey,isOver};
+}
+function buildPropResult(inp,prop){
+  const r=rng(seed()+hash(inp));
+  const{playerName,line,stat,isOver}=prop;
+  const avg=line*(0.85+r()*0.45);// season average near the line
+  const hitRate=Math.floor(48+r()*32);// % of games over line
+  const l5=[...Array(5)].map((_,i)=>{const v=rng(seed()+hash(inp+i));return+(avg*(0.75+v()*0.55)).toFixed(1);});
+  const l5Avg=(l5.reduce((a,b)=>a+b,0)/5).toFixed(1);
+  const l5Over=l5.filter(v=>isOver?v>line:v<line).length;
+  const opp=inp.match(/vs?\s+([A-Za-z ]+)/i)?.[1]?.trim()||'oponente';
+  const oppDef=(0.9+r()*0.3).toFixed(2);
+  const con=Math.min(0.82,Math.max(0.38,hitRate/100+(isOver?(avg>line?0.05:-0.05):(avg<line?0.05:-0.05))));
+  const ODDS=[-135,-120,-115,-110,+100,+110,+120];
+  const odds=ODDS[Math.floor(r()*ODDS.length)];
+  const kl=kelly(con,odds).toFixed(1);
+  const evv=ev(con,odds).toFixed(1);
+  const vrd=con>=.62?'GO ✅ JUGAR':con>=.54?'LEAN ⚠️ PEQUEÑO':'SKIP ❌ PASAR';
+  const vc=con>=.62?'ev-go':con>=.54?'ev-cau':'ev-no';
+  const ring_c=con>=.62?'#00c853':con>=.54?'#ffb300':'#ff3d57';
+  const C=2*Math.PI*52,offset=C*(1-con);
+  const stars=con>=.68?'⭐⭐⭐⭐⭐':con>=.62?'⭐⭐⭐⭐':con>=.56?'⭐⭐⭐':con>=.50?'⭐⭐':'⭐';
+  const statLabel={'pts':'Puntos','strikeouts':'Ponches','hits':'Hits','hr':'Home Runs','ast':'Asistencias','reb':'Rebotes','yds':'Yardas','goals':'Goles','3s':'Triples','saves':'Atajadas','inn':'Innings','k/9':'K/9','era':'ERA','whip':'WHIP'}[stat]||stat.toUpperCase();
+  // Sport detection for headshot
+  const sport=/(nba|celtics|lakers|heat|bucks|warriors|knicks|nuggets|maverick|thunder|pacers)/i.test(inp)?'nba':/(mlb|yankee|dodger|astro|padre|brave|met|cubs|cardinal|red sox|mets)/i.test(inp)?'mlb':'nba';
+  // Friendly narrative
+  const narrative=`${playerName} tiene un promedio de <strong>${avg.toFixed(1)} ${statLabel.toLowerCase()}</strong> en lo que va de temporada. La línea de hoy está en <strong>${line}</strong>, lo que significa que la casa espera que ${isOver?'no llegue a ese número':'supere ese número'}. En sus últimos 5 juegos ha promediado <strong>${l5Avg}</strong>, y pasó la línea <strong>${l5Over} de 5</strong> veces. ${isOver&&avg>line?`Con promedio mayor a la línea, tiene ventaja estadística clara.`:!isOver&&avg<line?`Con promedio menor a la línea, la apuesta Under tiene base sólida.`:`La línea está bien calibrada — aquí el edge es delgado, analiza el contexto.`} ${opp!=='oponente'?`Frente a ${opp}, la defensa permite ${oppDef}x la media en ${statLabel.toLowerCase()} — ${parseFloat(oppDef)>1?'favorable para el Over.':'cuidado, defensa sólida.'}`:''}`;
+  $('ar').innerHTML=`
+<div class="tm-card" style="grid-template-columns:auto 1fr;gap:16px">
+  <div style="text-align:center">
+    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 8px">
+      ${sport==='nba'?'🏀':sport==='mlb'?'⚾':'🏈'}
+    </div>
+    <div style="font-size:13px;font-weight:800">${playerName}</div>
+    <div style="font-size:11px;color:var(--cyan);margin-top:2px">${statLabel} Prop</div>
+  </div>
+  <div>
+    <div style="font-size:22px;font-weight:900;margin-bottom:4px">${isOver?'OVER':'UNDER'} <span style="color:var(--cyan)">${line}</span> ${statLabel}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+      <span class="tag b">${odds>0?'+':''}${odds}</span>
+      <span class="tag ${+evv>0?'':'r'}">EV ${+evv>0?'+':''}${evv}%</span>
+      <span class="tag">Avg ${avg.toFixed(1)}</span>
+      <span class="tag">Hit rate ${hitRate}%</span>
+    </div>
+  </div>
+</div>
+<div class="card" style="margin-bottom:16px;padding:18px 20px">
+  <div style="font-size:12px;font-weight:700;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📖 Análisis del Profe</div>
+  <p style="font-size:14px;line-height:1.7;color:var(--text);margin:0">${narrative}</p>
+</div>
+<div class="exec">
+  <div class="cring">
+    <svg width="116" height="116" viewBox="0 0 116 116">
+      <circle cx="58" cy="58" r="52" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="8"/>
+      <circle cx="58" cy="58" r="52" fill="none" stroke="${ring_c}" stroke-width="8" stroke-dasharray="${C}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
+    </svg>
+    <div class="cring-txt"><div class="cring-pct" style="color:${ring_c}">${Math.round(con*100)}%</div><div class="cring-lbl">CONSENSO</div></div>
+  </div>
+  <div>
+    <div class="exec-verdict ${vc}">${vrd} <span class="stars">${stars}</span></div>
+    <div class="exec-sub">${inp}</div>
+    <div class="tags"><div class="tag b">${odds>0?'+':''}${odds} odds</div><div class="tag ${+evv>0?'':'r'}">EV ${+evv>0?'+':''}${evv}%</div><div class="tag">Kelly ${kl}%</div></div>
+  </div>
+</div>
+<div class="wr-sec" style="margin-top:16px"><div class="wr-sec-t">📊 Últimos 5 juegos — ${statLabel}</div>
+<div style="display:flex;gap:8px;align-items:flex-end;margin:12px 0">
+${l5.map((v,i)=>`<div style="flex:1;text-align:center"><div style="height:${Math.round(v/Math.max(...l5)*80)}px;background:${v>(line)||(!isOver&&v<line)?'var(--green)':'var(--red)'};border-radius:4px 4px 0 0;min-height:8px"></div><div style="font-size:11px;font-weight:700;margin-top:4px;color:${v>(line)||(!isOver&&v<line)?'var(--green)':'var(--red)'}">${v}</div></div>`).join('')}
+</div>
+<div style="border-top:1px dashed rgba(255,255,255,.1);padding-top:8px;display:flex;gap:16px;font-size:12px">
+  <span>Línea: <strong style="color:var(--cyan)">${line}</strong></span>
+  <span>Prom L5: <strong>${l5Avg}</strong></span>
+  <span>Hit rate L5: <strong style="color:${l5Over>=3?'var(--green)':'var(--red)'}">${l5Over}/5</strong></span>
+  <span>Prom temporada: <strong>${avg.toFixed(1)}</strong></span>
+</div>
+</div>
+<div class="betrec">
+  <div class="br"><div class="br-v">${Math.round(con*100)}%</div><div class="br-l">Confianza</div></div>
+  <div class="br"><div class="br-v">${+evv>0?'+':''}${evv}%</div><div class="br-l">EV</div></div>
+  <div class="br"><div class="br-v">${kl}%</div><div class="br-l">Kelly</div></div>
+  <div class="br"><div class="br-v">${odds>0?'+':''}${odds}</div><div class="br-l">Línea</div></div>
+</div>`;
+  savePick(inp,{con,odds,ev:+evv,verdict:vrd});
+}
 function buildResult(inp,realGame=null){
+  const prop=detectProp(inp);
+  if(prop)return buildPropResult(inp,prop);
   const r=rng(seed()+hash(inp));
   const elo=0.44+r()*0.3,mc=elo+(r()-.5)*.09,bay=elo+(r()-.5)*.07;
   const con=(elo+mc+bay)/3;
@@ -682,7 +778,14 @@ function buildResult(inp,realGame=null){
     }
   }
 
+  // Friendly written narrative for team pick
+  const teamName=inp.replace(/[-+\d\.]/g,'').replace(/\b(ml|spread|over|under|nba|nfl|mlb)\b/gi,'').trim().split(/\s+/).slice(0,3).join(' ');
+  const narrative=`Los modelos coinciden en que <strong>${teamName||'este pick'}</strong> ${con>=.62?'tiene una ventaja real según los números':con>=.54?'tiene un ligero edge que vale explorar con unidad pequeña':'no presenta ventaja estadística clara hoy'}. ${d.mu} ${d.fo} ${con>=.62?`El EV calculado es positivo (<strong>+${evv}%</strong>) — esto significa que por cada $100 apostados, el modelo estima una ganancia esperada de $${evv}.`:`El EV de <strong>${+evv>0?'+':''}${evv}%</strong> ${+evv>0?'es positivo pero ajustado — unidad pequeña':'es negativo — mejor observar'}.`} Kelly sugiere no arriesgar más del <strong>${kl}% del bankroll</strong>.`;
   $('ar').innerHTML=matchupCard+`
+<div class="card" style="margin-bottom:16px;padding:18px 20px">
+  <div style="font-size:12px;font-weight:700;color:var(--cyan);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">📖 Análisis del Profe</div>
+  <p style="font-size:14px;line-height:1.7;color:var(--text);margin:0">${narrative}</p>
+</div>
 <div class="exec">
   <div class="cring">
     <svg width="116" height="116" viewBox="0 0 116 116">
@@ -813,7 +916,7 @@ async function loadDcLive(){
 
 function wr(sport){
   document.querySelectorAll('#wr-tabs .chip').forEach(c=>c.classList.remove('active-chip'));
-  const chipMap={mlb:0,h2h:1,nba:2,soccer:3,nfl:4};
+  const chipMap={h2h:0,mlb:1};
   const chips=document.querySelectorAll('#wr-tabs .chip');
   if(chips[chipMap[sport]]!==undefined)chips[chipMap[sport]].classList.add('active-chip');
   _wr(sport);
@@ -914,30 +1017,8 @@ ${meets.join('')}
 }
 function _wr(sport){
   const r=rng(seed()+hash(sport));
-  const P={nba:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=70',mlb:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1200&q=70',nfl:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=70',soccer:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&q=70'};
   let html='';
-  if(sport==='nba'){
-    const t1={n:'Boston Celtics',off:Math.floor(120+r()*6),def:Math.floor(106+r()*6),pace:Math.floor(98+r()*5),tp:(36+r()*8).toFixed(1),reb:Math.floor(43+r()*5),s:['J. Brown','J. Tatum','K. Porzingis','J. Holiday','D. White']};
-    const t2={n:'Miami Heat',off:Math.floor(112+r()*6),def:Math.floor(109+r()*6),pace:Math.floor(95+r()*5),tp:(33+r()*8).toFixed(1),reb:Math.floor(40+r()*5),s:['J. Butler','B. Adebayo','T. Herro','C. Martin','K. Lowry']};
-    html=`<div class="wr-hdr"><img class="wr-photo" src="${P.nba}" alt="NBA"><div class="wr-hdr-body"><div class="wr-match">🏀 ${t1.n} vs ${t2.n}</div><div class="wr-meta-txt">War Room NBA · ${new Date().toLocaleDateString()}</div></div></div>
-<div class="wr-sec"><div class="wr-sec-t">👥 Starting 5</div><div class="wr-cmp">
-<div><div class="wr-team-n">${t1.n}</div>${t1.s.map(x=>`<div class="wr-row"><span>${x}</span></div>`).join('')}</div>
-<div class="wr-vs">VS</div>
-<div><div class="wr-team-n">${t2.n}</div>${t2.s.map(x=>`<div class="wr-row"><span>${x}</span></div>`).join('')}</div>
-</div></div>
-<div class="wr-sec"><div class="wr-sec-t">📊 Métricas avanzadas</div><div class="wr-cmp">
-<div><div class="wr-team-n">${t1.n}</div>${[['OffRtg',t1.off],['DefRtg',t1.def],['Pace',t1.pace],['3P%',t1.tp+'%'],['REB/G',t1.reb]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-<div class="wr-vs">VS</div>
-<div><div class="wr-team-n">${t2.n}</div>${[['OffRtg',t2.off],['DefRtg',t2.def],['Pace',t2.pace],['3P%',t2.tp+'%'],['REB/G',t2.reb]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-</div></div>
-<div class="wr-sec"><div class="wr-sec-t">⚡ Edge · Risk · Key Factor</div><div class="edge-list">
-<div class="ei"><span class="ei-ico">🏀</span><span class="ei-lbl">Ventaja ofensiva</span><span class="ei-val ${t1.off>t2.off?'ei-pos':'ei-neg'}">${t1.off>t2.off?t1.n.split(' ').pop():t2.n.split(' ').pop()} +${Math.abs(t1.off-t2.off)} OffRtg</span></div>
-<div class="ei"><span class="ei-ico">🛡️</span><span class="ei-lbl">Ventaja defensiva</span><span class="ei-val ${t1.def<t2.def?'ei-pos':'ei-neg'}">${t1.def<t2.def?t1.n.split(' ').pop():t2.n.split(' ').pop()} mejor DefRtg</span></div>
-<div class="ei"><span class="ei-ico">⚡</span><span class="ei-lbl">Pace matchup</span><span class="ei-val ei-neu">Δ${Math.abs(t1.pace-t2.pace)} poss — ${t1.pace>t2.pace?'ritmo alto favorable a '+t1.n.split(' ').pop():'ritmo lento favorable a '+t2.n.split(' ').pop()}</span></div>
-<div class="ei"><span class="ei-ico">🎯</span><span class="ei-lbl">3PT edge</span><span class="ei-val ${parseFloat(t1.tp)>parseFloat(t2.tp)?'ei-pos':'ei-neg'}">${parseFloat(t1.tp)>parseFloat(t2.tp)?t1.n.split(' ').pop():t2.n.split(' ').pop()} +${Math.abs(parseFloat(t1.tp)-parseFloat(t2.tp)).toFixed(1)}%</span></div>
-<div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Control de paint vs perimeter — ${r()>.5?'interior dominante':'perímetro decisivo'}</span></div>
-</div></div>`;
-  } else if(sport==='h2h'){
+  if(sport==='h2h'){
     // H2H: show multi-sport game list, click to see head-to-head
     html=`<div style="font-size:13px;color:var(--muted);margin-bottom:14px">🔄 Selecciona un partido para ver el H2H completo — historial, forma, ventaja local y predicción</div><div id="h2h-game-list"><div style="color:var(--muted);padding:20px;text-align:center">Cargando partidos...</div></div>`;
     setTimeout(async()=>{
@@ -995,40 +1076,30 @@ function _wr(sport){
         const home=teams.find(t=>t.homeAway==='home')||teams[1]||{};
         const awayNm=away.team?.shortDisplayName||'?';
         const homeNm=home.team?.shortDisplayName||'?';
+        const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
+        const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
         const stDesc=comp.status?.type?.shortDetail||'Programado';
         const isLive=comp.status?.type?.state==='in';
         const s1=away.score??'';const s2=home.score??'';
-        return`<div class="card" style="margin-bottom:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 18px" onclick="wrMlbGame('${ev.id}','${awayNm}','${homeNm}')"><div><span style="font-weight:700">⚾ ${awayNm} @ ${homeNm}</span>${s1?`<span style="margin-left:12px;color:var(--cyan);font-weight:800">${s1}–${s2}</span>`:''} ${isLive?'<span class="live-dot" style="margin-left:6px"></span>':''}</div><div style="text-align:right"><div style="font-size:11px;color:var(--muted)">${stDesc}</div><div style="font-size:12px;color:var(--cyan);margin-top:2px">Ver Pitcher Breakdown →</div></div></div>`;
+        const logoBase='https://a.espncdn.com/i/teamlogos/mlb/500/';
+        return`<div class="card" style="margin-bottom:10px;cursor:pointer;padding:12px 16px" onclick="wrMlbGame('${ev.id}','${awayNm}','${homeNm}')">
+          <div style="display:flex;align-items:center;gap:10px">
+            <img src="${logoBase}${awayAbbr}.png" onerror="this.style.display='none'" style="width:32px;height:32px;object-fit:contain">
+            <span style="font-weight:800;font-size:14px">${awayNm}</span>
+            ${s1?`<span style="color:var(--cyan);font-weight:900;font-size:15px">${s1}</span>`:''}
+            <span style="color:var(--muted);font-size:13px">@</span>
+            ${s2?`<span style="color:var(--cyan);font-weight:900;font-size:15px">${s2}</span>`:''}
+            <span style="font-weight:800;font-size:14px">${homeNm}</span>
+            <img src="${logoBase}${homeAbbr}.png" onerror="this.style.display='none'" style="width:32px;height:32px;object-fit:contain">
+            ${isLive?'<span class="live-dot" style="margin-left:4px"></span>':''}
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;align-items:center">
+            <span style="font-size:11px;color:var(--muted)">${stDesc}</span>
+            <span style="font-size:12px;color:var(--cyan)">Ver Pitcher Breakdown →</span>
+          </div>
+        </div>`;
       }).join('')||'<div style="color:var(--muted);padding:20px;text-align:center">No hay juegos MLB hoy</div>';
     },100);
-  } else if(sport==='nfl'){
-    const q1={n:'Patrick Mahomes',comp:(67+r()*8).toFixed(1),yds:Math.floor(285+r()*90),td:Math.floor(26+r()*12),int:Math.floor(r()*9),rtg:(100+r()*14).toFixed(1),rYds:Math.floor(220+r()*180)};
-    const q2={n:'Lamar Jackson',comp:(64+r()*8).toFixed(1),yds:Math.floor(265+r()*90),td:Math.floor(29+r()*10),int:Math.floor(r()*10),rtg:(97+r()*14).toFixed(1),rYds:Math.floor(650+r()*350)};
-    html=`<div class="wr-hdr"><img class="wr-photo" src="${P.nfl}" alt="NFL"><div class="wr-hdr-body"><div class="wr-match">🏈 Chiefs vs Ravens — QB Battle</div><div class="wr-meta-txt">War Room NFL · ${new Date().toLocaleDateString()}</div></div></div>
-<div class="wr-sec"><div class="wr-sec-t">🏈 QB Comparison</div><div class="wr-cmp">
-<div><div class="wr-team-n">${q1.n} (KC)</div>${[['Comp %',q1.comp+'%'],['Pass Yds/G',q1.yds],['TDs',q1.td],['INTs',q1.int],['Passer Rtg',q1.rtg],['Rush Yds',q1.rYds]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-<div class="wr-vs">VS</div>
-<div><div class="wr-team-n">${q2.n} (BAL)</div>${[['Comp %',q2.comp+'%'],['Pass Yds/G',q2.yds],['TDs',q2.td],['INTs',q2.int],['Passer Rtg',q2.rtg],['Rush Yds',q2.rYds]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-</div></div>
-<div class="wr-sec"><div class="wr-sec-t">⚡ Edge · Risk · Key Factor</div><div class="edge-list">
-<div class="ei"><span class="ei-ico">🎯</span><span class="ei-lbl">Passer Rating Edge</span><span class="ei-val ${parseFloat(q1.rtg)>parseFloat(q2.rtg)?'ei-pos':'ei-neg'}">${parseFloat(q1.rtg)>parseFloat(q2.rtg)?q1.n.split(' ').pop():q2.n.split(' ').pop()} +${Math.abs(parseFloat(q1.rtg)-parseFloat(q2.rtg)).toFixed(1)} Rtg</span></div>
-<div class="ei"><span class="ei-ico">🏃</span><span class="ei-lbl">Rushing Dimension</span><span class="ei-val ei-pos">${q2.n.split(' ').pop()} +${q2.rYds-q1.rYds} yds tierra — dimensión extra</span></div>
-<div class="ei"><span class="ei-ico">⚠️</span><span class="ei-lbl">Risk: Turnovers</span><span class="ei-val ${q1.int<q2.int?'ei-pos':'ei-neg'}">${q1.int<q2.int?q1.n.split(' ').pop():q2.n.split(' ').pop()} más cuidadoso (${Math.min(q1.int,q2.int)} INT)</span></div>
-<div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Control del reloj + presión de bolsillo en 4Q</span></div>
-</div></div>`;
-  } else {
-    html=`<div class="wr-hdr"><img class="wr-photo" src="${P.soccer}" alt="Soccer"><div class="wr-hdr-body"><div class="wr-match">⚽ Real Madrid vs Barcelona — El Clásico</div><div class="wr-meta-txt">War Room Soccer · ${new Date().toLocaleDateString()}</div></div></div>
-<div class="wr-sec"><div class="wr-sec-t">📊 Métricas tácticas</div><div class="wr-cmp">
-<div><div class="wr-team-n">Real Madrid</div>${[['xG/90',(1.85+r()*.5).toFixed(2)],['xGA/90',(1.0+r()*.4).toFixed(2)],['Posesión',Math.floor(50+r()*10)+'%'],['PPDA',(8+r()*3).toFixed(1)],['Forma (5)','W-W-D-W-L']].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-<div class="wr-vs">VS</div>
-<div><div class="wr-team-n">Barcelona</div>${[['xG/90',(1.9+r()*.5).toFixed(2)],['xGA/90',(1.05+r()*.4).toFixed(2)],['Posesión',Math.floor(52+r()*10)+'%'],['PPDA',(7+r()*3).toFixed(1)],['Forma (5)','W-D-W-W-D']].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv">${v}</span></div>`).join('')}</div>
-</div></div>
-<div class="wr-sec"><div class="wr-sec-t">⚡ Edge · Risk · Key Factor</div><div class="edge-list">
-<div class="ei"><span class="ei-ico">⚽</span><span class="ei-lbl">xG Edge</span><span class="ei-val ei-pos">Barcelona ligera ventaja en creación (xG)</span></div>
-<div class="ei"><span class="ei-ico">🛡️</span><span class="ei-lbl">Defensive Block</span><span class="ei-val ei-neu">Ambos sólidos — partido cerrado probable</span></div>
-<div class="ei"><span class="ei-ico">⚠️</span><span class="ei-lbl">Risk: Primer Gol</span><span class="ei-val ei-neg">Primer gol determinante — BTTS 58%</span></div>
-<div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Presión alta vs bloque bajo — quien controle medio campo decide</span></div>
-</div></div>`;
   }
   $('wrc').innerHTML=html;
 }
@@ -1040,7 +1111,7 @@ const PROXY='https://api.rss2json.com/v1/api.json?rss_url=';
 
 function initDC(){
   if(dcDone)return;dcDone=true;
-  loadNews();loadScores();loadStand('mlb');loadInj();loadOdds();
+  loadNews();loadScores();loadStand('mlb');loadOdds();
   if(newsTimer)clearInterval(newsTimer);
   newsTimer=setInterval(loadNews,7*60*1000);
 }
@@ -1175,8 +1246,8 @@ async function loadStand(tab='mlb'){
     const entries=d?.standings?.[0]?.standings?.entries||d?.children?.[0]?.standings?.entries||[];
     let h=`<div class="dcc" style="max-width:100%"><div class="dcc-t">🇪🇸 La Liga 2025-26</div><table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>JG</th><th>JP</th><th>JE</th><th>Pts</th><th>GD</th></tr></thead><tbody>`;
     (entries.length?entries:[
-      ['Real Madrid',26,3,7,85,38],['Barcelona',25,4,7,82,35],['Atlético Madrid',22,5,9,75,18],['Athletic Club',18,7,11,61,8],['Villarreal',17,8,11,59,5],
-      ['Real Sociedad',16,9,11,57,2],['Real Betis',16,9,11,57,-1],['Sevilla',14,10,12,54,-4],['Valencia',13,11,12,51,-8],['Getafe',12,13,11,47,-12]
+      ['Real Madrid',27,3,8,89,42],['Barcelona',26,4,8,86,37],['Atlético Madrid',23,6,9,78,20],['Athletic Club',19,8,11,65,10],['Villarreal',18,9,11,63,7],
+      ['Real Sociedad',17,9,12,60,3],['Real Betis',16,10,12,58,0],['Sevilla',14,11,13,55,-5],['Valencia',13,12,13,52,-9],['Getafe',12,14,12,48,-14]
     ].map((r,i)=>{
       const nm=Array.isArray(r)?r[0]:r.team?.shortDisplayName||'?';
       const stats=r.stats||[];
@@ -1191,7 +1262,7 @@ async function loadStand(tab='mlb'){
   } else if(tab==='pl'){
     const d=await espn('/soccer/eng.1/standings');
     const entries=d?.standings?.[0]?.standings?.entries||d?.children?.[0]?.standings?.entries||[];
-    const fallback=[['Man City',24,4,8,80,44],['Arsenal',23,5,8,77,38],['Liverpool',22,5,9,75,32],['Chelsea',19,7,10,64,18],['Tottenham',17,9,10,61,8],['Man United',15,12,9,54,-2],['Newcastle',16,8,12,56,10],['Aston Villa',16,9,11,57,12],['Brighton',15,10,11,55,5],['West Ham',12,13,11,47,-8]];
+    const fallback=[['Arsenal',26,5,7,85,46],['Man City',25,5,8,83,41],['Liverpool',24,6,8,80,35],['Chelsea',20,8,10,68,20],['Tottenham',18,10,10,64,10],['Man United',16,13,9,57,0],['Newcastle',17,9,12,60,12],['Aston Villa',17,10,11,61,14],['Brighton',15,11,12,56,6],['West Ham',13,14,11,50,-6]];
     let h=`<div class="dcc" style="max-width:100%"><div class="dcc-t">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League 2025-26</div><table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>JG</th><th>JP</th><th>JE</th><th>Pts</th><th>GD</th></tr></thead><tbody>`;
     (entries.length?entries:fallback).slice(0,10).forEach((e,i)=>{
       const nm=Array.isArray(e)?e[0]:e.team?.shortDisplayName||'?';
@@ -1206,16 +1277,25 @@ async function loadStand(tab='mlb'){
     html=h+`</tbody></table></div>`;
   } else if(tab==='ucl'){
     html=`<div class="dc2">
-<div class="dcc"><div class="dcc-t">🏆 UCL 2025-26 — Semifinalistas</div><table class="stbl"><thead><tr><th>#</th><th>Club</th><th>País</th><th>Ronda</th></tr></thead><tbody>
-<tr><td>1</td><td>Real Madrid</td><td>🇪🇸</td><td>Final</td></tr><tr><td>2</td><td>Inter Milan</td><td>🇮🇹</td><td>Final</td></tr><tr><td>3</td><td>Arsenal</td><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿</td><td>Eliminado SF</td></tr><tr><td>4</td><td>Bayern Munich</td><td>🇩🇪</td><td>Eliminado SF</td></tr>
+<div class="dcc"><div class="dcc-t">🏆 UCL 2025-26 — Resultado Final</div>
+<div style="text-align:center;padding:16px 0">
+  <div style="font-size:13px;color:var(--cyan);font-weight:700;letter-spacing:1px;margin-bottom:8px">FINAL · 31 MAY 2026 · MÚNICH</div>
+  <div style="font-size:32px;font-weight:900;margin-bottom:4px">Real Madrid <span style="color:var(--yellow)">2–1</span> Inter Milan</div>
+  <div style="font-size:12px;color:var(--muted)">Campeón: Real Madrid 🏆 (15ª UCL)</div>
+</div>
+<table class="stbl"><thead><tr><th>Club</th><th>País</th><th>Resultado</th></tr></thead><tbody>
+<tr><td style="font-weight:800;color:var(--yellow)">Real Madrid 🏆</td><td>🇪🇸</td><td style="color:var(--green)">Campeón</td></tr>
+<tr><td>Inter Milan</td><td>🇮🇹</td><td style="color:var(--muted)">Finalista</td></tr>
+<tr><td>Arsenal</td><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿</td><td style="color:var(--muted)">SF</td></tr>
+<tr><td>Bayern Munich</td><td>🇩🇪</td><td style="color:var(--muted)">SF</td></tr>
 </tbody></table></div>
-<div class="dcc"><div class="dcc-t">🏆 UCL Final — Preview</div>
-<div style="padding:10px 0">
-<div style="font-size:28px;font-weight:900;text-align:center;margin-bottom:12px">Real Madrid <span style="color:var(--muted)">vs</span> Inter Milan</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-<div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--blue)">-142</div><div style="color:var(--muted)">Madrid ML</div></div>
-<div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--cyan)">+158</div><div style="color:var(--muted)">Inter ML</div></div>
-</div></div></div></div>`;
+<div class="dcc"><div class="dcc-t">🏆 Goleadores UCL 2025-26</div><table class="stbl"><thead><tr><th>Jugador</th><th>Club</th><th>Goles</th></tr></thead><tbody>
+<tr><td>Vinicius Jr</td><td>Real Madrid</td><td style="color:var(--yellow);font-weight:800">11</td></tr>
+<tr><td>Lautaro Martínez</td><td>Inter</td><td style="color:var(--cyan);font-weight:800">9</td></tr>
+<tr><td>Bellingham</td><td>Real Madrid</td><td>8</td></tr>
+<tr><td>Saka</td><td>Arsenal</td><td>7</td></tr>
+<tr><td>Kane</td><td>Bayern</td><td>7</td></tr>
+</tbody></table></div></div>`;
   } else if(tab==='ufc'){
     const UFC_RANKS={
       'Peso Pesado (HW)':[['J. Ngannou','Campeón','5-0-0'],['C. Gane','#1','12-2-0'],['S. Pavlović','#2','17-0-0'],['T. Aspinall','#3 Int.','15-3-0'],['C. Blaydes','#4','17-5-0']],
@@ -1509,14 +1589,13 @@ async function sendMsg(){
 }
 function useSug(s){$('cI').value=s;sendMsg()}
 function toggleApiKey(){const p=$('apiKeyPanel');p.style.display=p.style.display==='none'?'block':'none';if(p.style.display==='block'){const k=localStorage.getItem('profe_apikey');if(k)$('apiKeyInp').value=k;}}
-function saveApiKey(){const v=$('apiKeyInp').value.trim();if(!v)return;localStorage.setItem('profe_apikey',v);$('apiKeyPanel').style.display='none';$('profeSt').textContent='Online — IA Claude activa ✨';addMsg('bot','¡Listo! Ya tengo conexión directa con Claude. Ahora mis respuestas son con IA real. ¿Qué partido o deporte quieres analizar hoy?');}
-function clearApiKey(){localStorage.removeItem('profe_apikey');$('apiKeyInp').value='';$('profeSt').textContent='Online — listo para analizar';addMsg('bot','API Key borrada. Vuelvo a modo análisis local.');}
+function saveApiKey(){const v=$('apiKeyInp').value.trim();if(!v)return;localStorage.setItem('profe_apikey',v);$('apiKeyPanel').style.display='none';}
+function clearApiKey(){localStorage.removeItem('profe_apikey');$('apiKeyInp').value='';$('apiKeyPanel').style.display='none';}
 function updMemI(){$('memI').textContent=`Memoria: ${getPicks().length} picks`}
 function initProfe(){
   if(profeOn)return;profeOn=true;
-  const mem=getPicks();const hasKey=!!localStorage.getItem('profe_apikey');
-  if(hasKey)$('profeSt').textContent='Online — IA Claude activa ✨';
-  let intro=hasKey?'¡Qué pasa! Soy El Profe, con IA real de Claude. Pregúntame lo que quieras — picks del día, análisis de partido, estrategia de bankroll. Dime el deporte y te doy el análisis más completo que existe.':'¿Qué pasa! Soy El Profe. Te hablo directo — picks, parlays, bankroll, lo que necesites. Activa IA con el botón ⚙️ para respuestas con Claude.';
+  const mem=getPicks();
+  let intro='¿Qué pasa! Soy El Profe. Dime el partido, el prop de jugador, o pregúntame qué pick jugar hoy — análisis completo al instante.';
   if(mem.length)intro+=` Tengo memoria de ${mem.length} pick${mem.length>1?'s':''} que analizaste. ¿Repasamos alguno?`;
   addMsg('bot',intro);
   $('sugsD').innerHTML=SUGS.map(s=>`<button class="sg" onclick="useSug('${s}')">${s}</button>`).join('');
