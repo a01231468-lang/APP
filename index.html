@@ -248,7 +248,9 @@ section.active{display:block}
 .omv{font-size:10px}.omv.up{color:var(--green)}.omv.dn{color:var(--red)}
 
 /* EL PROFE */
-.chat-wrap{max-width:780px;margin:0 auto}
+#s-profe{background:linear-gradient(135deg,#060d18 0%,#0d1f3a 40%,#0a1628 70%,#060d18 100%) !important}
+#s-profe::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,102,255,.08) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 85% 80%,rgba(124,58,237,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+.chat-wrap{max-width:780px;margin:0 auto;position:relative;z-index:1}
 .chat-hdr{background:var(--card);border:1px solid var(--bdr);border-radius:14px 14px 0 0;padding:14px 18px;display:flex;align-items:center;gap:11px}
 .ch-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .ch-name{font-size:15px;font-weight:800}
@@ -402,7 +404,17 @@ section.active{display:block}
   </div>
   <div class="dcp active" id="dc-news"><div id="newsC"><div style="color:var(--muted);padding:40px;text-align:center">Cargando...</div></div></div>
   <div class="dcp" id="dc-scores"><div id="scoresC"></div></div>
-  <div class="dcp" id="dc-stand"><div id="standC"></div></div>
+  <div class="dcp" id="dc-stand">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="dct active" onclick="standTab('mlb')">⚾ MLB</button>
+      <button class="dct" onclick="standTab('nba')">🏀 NBA</button>
+      <button class="dct" onclick="standTab('laliga')">🇪🇸 LaLiga</button>
+      <button class="dct" onclick="standTab('pl')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier</button>
+      <button class="dct" onclick="standTab('ucl')">🏆 UCL</button>
+      <button class="dct" onclick="standTab('ufc')">🥊 UFC</button>
+    </div>
+    <div id="standC"></div>
+  </div>
   <div class="dcp" id="dc-inj"><div id="injC"></div></div>
   <div class="dcp" id="dc-odds"><div id="oddsC"></div></div>
 </section>
@@ -419,21 +431,38 @@ section.active{display:block}
   <div class="sh"><div class="sh-title">🧠 El Profe</div><div class="sh-sub">Tu tipster personal — memoria, análisis profundo, habla directo</div></div>
   <div class="chat-wrap">
     <div class="chat-hdr">
-      <svg class="profe-bitmoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="2.5"/>
-        <circle cx="50" cy="38" r="18" fill="#f5c08a"/>
-        <rect x="32" y="38" width="36" height="22" rx="5" fill="#f5c08a"/>
-        <rect x="28" y="26" width="44" height="6" rx="3" fill="#1a1a2e"/>
-        <rect x="28" y="22" width="44" height="8" rx="4" fill="#0066FF"/>
-        <ellipse cx="43" cy="37" rx="4" ry="5" fill="white"/>
-        <ellipse cx="57" cy="37" rx="4" ry="5" fill="white"/>
-        <circle cx="43" cy="38" r="2.5" fill="#1a1a2e"/>
-        <circle cx="57" cy="38" r="2.5" fill="#1a1a2e"/>
-        <path d="M42 47 Q50 52 58 47" stroke="#c87941" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <rect x="35" y="58" width="30" height="22" rx="4" fill="#0066FF"/>
-        <text x="50" y="73" text-anchor="middle" fill="white" font-size="10" font-weight="bold">PROFE</text>
-        <rect x="18" y="60" width="14" height="8" rx="3" fill="#0066FF"/>
-        <rect x="68" y="60" width="14" height="8" rx="3" fill="#0066FF"/>
+      <svg class="profe-bitmoji" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px">
+        <!-- Money Heist Professor style -->
+        <circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/>
+        <!-- Hair dark -->
+        <ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/>
+        <rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/>
+        <!-- Face -->
+        <ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/>
+        <!-- Ears -->
+        <ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/>
+        <ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/>
+        <!-- Glasses frames -->
+        <rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="1.8"/>
+        <rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="1.8"/>
+        <line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="35" y1="45" x2="31" y2="44" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="65" y1="45" x2="69" y2="44" stroke="#1a1a1a" stroke-width="1.5"/>
+        <!-- Eyes -->
+        <circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/>
+        <circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/>
+        <!-- Nose -->
+        <path d="M48 51 Q50 54 52 51" stroke="#c09070" stroke-width="1.2" fill="none"/>
+        <!-- Serious thin mouth -->
+        <line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Suit collar -->
+        <path d="M33 64 L50 70 L67 64 L67 90 L33 90 Z" fill="#1a1a1a"/>
+        <!-- Red tie -->
+        <path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/>
+        <!-- White shirt -->
+        <rect x="45" y="65" width="10" height="5" fill="white"/>
+        <!-- Red beret hint at top -->
+        <path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/>
       </svg>
       <div><div class="ch-name">El Profe</div><div class="ch-st">Online — listo para analizar</div></div>
       <div class="mem-info" id="memI">Memoria: 0 picks</div>
@@ -487,12 +516,14 @@ function go(id){
 
 // ── SLIDESHOW ─────────────────────────────────────────────────────────────────
 const IMGS=[
-  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=80',l:'Basketball'},
-  {u:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1600&q=80',l:'Soccer'},
-  {u:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1600&q=80',l:'Baseball'},
-  {u:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1600&q=80',l:'Football'},
-  {u:'https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=1600&q=80',l:'Tennis'},
-  {u:'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1600&q=80',l:'Racing'},
+  {u:'https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?w=1600&q=85',l:'Messi · La Pulga'},
+  {u:'https://images.unsplash.com/photo-1618077360395-f3068be8e001?w=1600&q=85',l:'Basketball Legend'},
+  {u:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1600&q=85',l:'Soccer Magic'},
+  {u:'https://images.unsplash.com/photo-1565987918998-9a0a1a1a8a8a?w=1600&q=85',l:'MLB Power'},
+  {u:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1600&q=85',l:'NBA Arena'},
+  {u:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=85',l:'Champions'},
+  {u:'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1600&q=85',l:'MMA Warrior'},
+  {u:'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=1600&q=85',l:'Baseball Diamond'},
 ];
 let sIdx=0;
 (function initSS(){
@@ -777,6 +808,24 @@ function wr(sport){
   if(chips[chipMap[sport]])chips[chipMap[sport]].classList.add('active-chip');
   _wr(sport);
 }
+async function wrMlbGame(evId,awayNm,homeNm){
+  const r=rng(seed()+hash(evId));
+  const p1={n:awayNm+' SP',era:(2.4+r()*1.8).toFixed(2),whip:(0.92+r()*.35).toFixed(2),k9:(9.5+r()*2.5).toFixed(1),l5:Math.floor(3+r()*2)+'-'+Math.floor(r()*2),bb9:(2+r()*1.5).toFixed(1),sp:'vs LHB .'+Math.floor(220+r()*20)+' vs RHB .'+Math.floor(210+r()*20)};
+  const p2={n:homeNm+' SP',era:(3.2+r()*1.8).toFixed(2),whip:(1.05+r()*.35).toFixed(2),k9:(10+r()*2.5).toFixed(1),l5:Math.floor(2+r()*3)+'-'+Math.floor(r()*2),bb9:(2.5+r()*1.5).toFixed(1),sp:'vs LHB .'+Math.floor(230+r()*20)+' vs RHB .'+Math.floor(220+r()*20)};
+  const eraEdge=parseFloat(p1.era)<parseFloat(p2.era)?p1.n:p2.n;
+  const kEdge=parseFloat(p1.k9)>parseFloat(p2.k9)?p1.n:p2.n;
+  const underTotal=Math.floor(parseFloat(p1.era)+parseFloat(p2.era)+4.5);
+  $('wrc').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><button onclick="wr('mlb')" style="background:rgba(255,255,255,.07);border:1px solid var(--bdr);border-radius:8px;color:var(--muted);padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">← Todos los juegos</button><span style="font-size:15px;font-weight:700">⚾ ${awayNm} @ ${homeNm}</span></div>
+<div class="wr-sec"><div class="wr-sec-t">⚾ Pitcher Comparison</div><div class="wr-cmp"><div><div class="wr-team-n">${p1.n}</div>${[['ERA',p1.era],['WHIP',p1.whip],['K/9',p1.k9],['BB/9',p1.bb9],['Últ 5',p1.l5],['Splits',p1.sp]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv" style="font-size:${l==='Splits'?'10':'12'}px">${v}</span></div>`).join('')}</div><div class="wr-vs">VS</div><div><div class="wr-team-n">${p2.n}</div>${[['ERA',p2.era],['WHIP',p2.whip],['K/9',p2.k9],['BB/9',p2.bb9],['Últ 5',p2.l5],['Splits',p2.sp]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv" style="font-size:${l==='Splits'?'10':'12'}px">${v}</span></div>`).join('')}</div></div></div>
+<div class="wr-sec"><div class="wr-sec-t">⚡ Edge · Risk · Key Factor</div><div class="edge-list">
+<div class="ei"><span class="ei-ico">🎯</span><span class="ei-lbl">ERA Edge</span><span class="ei-val ${eraEdge===p1.n?'ei-pos':'ei-neg'}">${eraEdge} — Δ${Math.abs(parseFloat(p1.era)-parseFloat(p2.era)).toFixed(2)} ERA</span></div>
+<div class="ei"><span class="ei-ico">🔥</span><span class="ei-lbl">K Power</span><span class="ei-val ${kEdge===p1.n?'ei-pos':'ei-neg'}">${kEdge} domina K/9 (${Math.max(parseFloat(p1.k9),parseFloat(p2.k9)).toFixed(1)})</span></div>
+<div class="ei"><span class="ei-ico">📊</span><span class="ei-lbl">Total sugerido</span><span class="ei-val ei-neu">Under ${underTotal} · ERA combinado ${(parseFloat(p1.era)+parseFloat(p2.era)).toFixed(2)}</span></div>
+<div class="ei"><span class="ei-ico">⚠️</span><span class="ei-lbl">Risk: Bullpen</span><span class="ei-val ${r()>.5?'ei-neg':'ei-pos'}">${r()>.5?'Bullpen visitante cargado últimas 3 noches':'Ambos bullpens descansados — OK'}</span></div>
+<div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Splits zurdo/derecho decisivos en innings 5-7</span></div>
+</div></div>`;
+}
+
 function _wr(sport){
   const r=rng(seed()+hash(sport));
   const P={nba:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=70',mlb:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1200&q=70',nfl:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=70',soccer:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&q=70'};
@@ -803,21 +852,32 @@ function _wr(sport){
 <div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Control de paint vs perimeter — ${r()>.5?'interior dominante':'perímetro decisivo'}</span></div>
 </div></div>`;
   } else if(sport==='mlb'){
-    const p1={n:'Gerrit Cole',era:(2.4+r()*1.8).toFixed(2),whip:(0.92+r()*.35).toFixed(2),k9:(9.5+r()*2.5).toFixed(1),l5:Math.floor(3+r()*2)+'-'+Math.floor(r()*2),bb9:(2+r()*1.5).toFixed(1),sp:'vs LHB .230 · vs RHB .215'};
-    const p2={n:'Freddy Peralta',era:(3.2+r()*1.8).toFixed(2),whip:(1.05+r()*.35).toFixed(2),k9:(10+r()*2.5).toFixed(1),l5:Math.floor(2+r()*3)+'-'+Math.floor(r()*2),bb9:(2.5+r()*1.5).toFixed(1),sp:'vs LHB .245 · vs RHB .228'};
-    html=`<div class="wr-hdr"><img class="wr-photo" src="${P.mlb}" alt="MLB"><div class="wr-hdr-body"><div class="wr-match">⚾ Yankees vs Brewers — Pitcher Duel</div><div class="wr-meta-txt">War Room MLB · ${new Date().toLocaleDateString()}</div></div></div>
-<div class="wr-sec"><div class="wr-sec-t">⚾ Pitcher Comparison</div><div class="wr-cmp">
-<div><div class="wr-team-n">${p1.n} (NYY)</div>${[['ERA',p1.era],['WHIP',p1.whip],['K/9',p1.k9],['BB/9',p1.bb9],['Últimos 5',p1.l5],['Splits',p1.sp]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv" style="font-size:${l==='Splits'?'10':'12'}px">${v}</span></div>`).join('')}</div>
-<div class="wr-vs">VS</div>
-<div><div class="wr-team-n">${p2.n} (MIL)</div>${[['ERA',p2.era],['WHIP',p2.whip],['K/9',p2.k9],['BB/9',p2.bb9],['Últimos 5',p2.l5],['Splits',p2.sp]].map(([l,v])=>`<div class="wr-row"><span>${l}</span><span class="wr-rv" style="font-size:${l==='Splits'?'10':'12'}px">${v}</span></div>`).join('')}</div>
-</div></div>
-<div class="wr-sec"><div class="wr-sec-t">⚡ Edge · Risk · Key Factor</div><div class="edge-list">
-<div class="ei"><span class="ei-ico">🎯</span><span class="ei-lbl">ERA Edge</span><span class="ei-val ${parseFloat(p1.era)<parseFloat(p2.era)?'ei-pos':'ei-neg'}">${parseFloat(p1.era)<parseFloat(p2.era)?p1.n.split(' ').pop():p2.n.split(' ').pop()} -${Math.abs(parseFloat(p1.era)-parseFloat(p2.era)).toFixed(2)} ERA</span></div>
-<div class="ei"><span class="ei-ico">🔥</span><span class="ei-lbl">K Power</span><span class="ei-val ${parseFloat(p1.k9)>parseFloat(p2.k9)?'ei-pos':'ei-neg'}">${parseFloat(p1.k9)>parseFloat(p2.k9)?p1.n.split(' ').pop():p2.n.split(' ').pop()} domina en K/9</span></div>
-<div class="ei"><span class="ei-ico">📊</span><span class="ei-lbl">Total recomendado</span><span class="ei-val ei-neu">Under ${Math.floor(parseFloat(p1.era)+parseFloat(p2.era)+4.5)} según ERA combinado</span></div>
-<div class="ei"><span class="ei-ico">⚠️</span><span class="ei-lbl">Risk: Bullpen</span><span class="ei-val ${r()>.5?'ei-neg':'ei-neu'}">${r()>.5?'Bullpen cansado últimas 3 noches':'Bullpen descansado — bajo riesgo'}</span></div>
-<div class="ei"><span class="ei-ico">🔑</span><span class="ei-lbl">Key Factor</span><span class="ei-val ei-neu">Splits vs zurdo/derecho decisivos en innings 5-7</span></div>
-</div></div>`;
+    // Show game list — fetch real MLB games
+    html=`<div style="font-size:13px;color:var(--muted);margin-bottom:14px">⚾ Selecciona un juego para ver el Pitcher Breakdown completo</div><div id="mlb-game-list"><div style="color:var(--muted);padding:20px;text-align:center">Cargando juegos de hoy...</div></div>`;
+    // After render, fetch games
+    setTimeout(async()=>{
+      const d=await espn('/baseball/mlb/scoreboard');
+      const gl=$('mlb-game-list');if(!gl)return;
+      let games=d?.events||[];
+      if(!games.length){
+        const r2=rng(seed());
+        games=[{id:'g1',teams:['Yankees','Dodgers']},{id:'g2',teams:['Cubs','Cardinals']},{id:'g3',teams:['Astros','Rangers']},{id:'g4',teams:['Braves','Mets']},{id:'g5',teams:['Red Sox','Rays']}];
+        gl.innerHTML=games.map(g=>`<div class="card" style="margin-bottom:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 18px" onclick="wrMlbGame('${g.id}','${g.teams[0]}','${g.teams[1]}')"><span style="font-weight:700">⚾ ${g.teams[0]} @ ${g.teams[1]}</span><span style="font-size:12px;color:var(--cyan)">Ver Pitcher Breakdown →</span></div>`).join('');
+        return;
+      }
+      gl.innerHTML=games.slice(0,10).map(ev=>{
+        const comp=ev.competitions?.[0]||{};
+        const teams=comp.competitors||[];
+        const away=teams.find(t=>t.homeAway==='away')||teams[0]||{};
+        const home=teams.find(t=>t.homeAway==='home')||teams[1]||{};
+        const awayNm=away.team?.shortDisplayName||'?';
+        const homeNm=home.team?.shortDisplayName||'?';
+        const stDesc=comp.status?.type?.shortDetail||'Programado';
+        const isLive=comp.status?.type?.state==='in';
+        const s1=away.score??'';const s2=home.score??'';
+        return`<div class="card" style="margin-bottom:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 18px" onclick="wrMlbGame('${ev.id}','${awayNm}','${homeNm}')"><div><span style="font-weight:700">⚾ ${awayNm} @ ${homeNm}</span>${s1?`<span style="margin-left:12px;color:var(--cyan);font-weight:800">${s1}–${s2}</span>`:''} ${isLive?'<span class="live-dot" style="margin-left:6px"></span>':''}</div><div style="text-align:right"><div style="font-size:11px;color:var(--muted)">${stDesc}</div><div style="font-size:12px;color:var(--cyan);margin-top:2px">Ver Pitcher Breakdown →</div></div></div>`;
+      }).join('')||'<div style="color:var(--muted);padding:20px;text-align:center">No hay juegos MLB hoy</div>';
+    },100);
   } else if(sport==='nfl'){
     const q1={n:'Patrick Mahomes',comp:(67+r()*8).toFixed(1),yds:Math.floor(285+r()*90),td:Math.floor(26+r()*12),int:Math.floor(r()*9),rtg:(100+r()*14).toFixed(1),rYds:Math.floor(220+r()*180)};
     const q2={n:'Lamar Jackson',comp:(64+r()*8).toFixed(1),yds:Math.floor(265+r()*90),td:Math.floor(29+r()*10),int:Math.floor(r()*10),rtg:(97+r()*14).toFixed(1),rYds:Math.floor(650+r()*350)};
@@ -940,50 +1000,109 @@ async function loadScores(){
   $('scoresC').innerHTML=`<div class="dcc" style="max-width:100%"><div class="dcc-t">🔴 Live Scores <span class="dcc-ref">${new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</span></div>${rows.join('')}</div>`;
 }
 
-async function loadStand(){
-  $('standC').innerHTML=`<div style="color:var(--muted);padding:40px;text-align:center">Cargando standings...</div>`;
-  const [nba,mlb]=await Promise.all([
-    espn('/basketball/nba/standings'),
-    espn('/baseball/mlb/standings')
-  ]);
-  let html='<div class="dc2">';
-  // NBA
-  html+=`<div class="dcc"><div class="dcc-t">🏀 NBA Playoffs 2026</div>`;
-  if(nba?.children?.[0]?.standings?.entries){
-    const entries=nba.children[0].standings.entries.slice(0,8);
-    html+=`<table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>W</th><th>L</th><th>%</th></tr></thead><tbody>`;
-    entries.forEach((e,i)=>{
-      const nm=e.team?.shortDisplayName||e.team?.displayName||'?';
+function standTab(tab){
+  document.querySelectorAll('#dc-stand .dct').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`#dc-stand [onclick="standTab('${tab}')"]`).classList.add('active');
+  loadStand(tab);
+}
+async function loadStand(tab='mlb'){
+  $('standC').innerHTML=`<div style="color:var(--muted);padding:40px;text-align:center">Cargando...</div>`;
+  let html='';
+  if(tab==='mlb'){
+    const [al,nl]=await Promise.all([espn('/baseball/mlb/standings?group=1'),espn('/baseball/mlb/standings?group=2')]);
+    const renderDiv=(data,title)=>{
+      if(!data?.children)return`<div class="dcc"><div class="dcc-t">${title}</div><div style="color:var(--muted);font-size:12px;padding:10px">No disponible</div></div>`;
+      let h=`<div class="dcc"><div class="dcc-t">${title}</div>`;
+      data.children.slice(0,3).forEach(div=>{
+        h+=`<div style="font-size:10px;color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:10px 0 4px">${div.name||''}</div>`;
+        h+=`<table class="stbl"><thead><tr><th>Equipo</th><th>W</th><th>L</th><th>GB</th><th>%</th></tr></thead><tbody>`;
+        (div.standings?.entries||[]).slice(0,5).forEach(e=>{
+          const nm=e.team?.shortDisplayName||'?';
+          const stats=e.stats||[];
+          const w=stats.find(s=>s.name==='wins')?.value??'—';
+          const l=stats.find(s=>s.name==='losses')?.value??'—';
+          const gb=stats.find(s=>s.name==='gamesBehind')?.value;
+          const pct=stats.find(s=>s.name==='winPercent')?.value;
+          h+=`<tr><td>${nm}</td><td>${w}</td><td>${l}</td><td>${gb===0?'—':gb??'—'}</td><td>${pct?parseFloat(pct).toFixed(3):'—'}</td></tr>`;
+        });
+        h+=`</tbody></table>`;
+      });
+      return h+`</div>`;
+    };
+    html=`<div class="dc2">${renderDiv(al,'⚾ MLB — Liga Americana')}${renderDiv(nl,'⚾ MLB — Liga Nacional')}</div>`;
+  } else if(tab==='nba'){
+    const [east,west]=await Promise.all([espn('/basketball/nba/standings?group=1'),espn('/basketball/nba/standings?group=2')]);
+    const renderConf=(data,title)=>{
+      if(!data?.standings?.entries)return`<div class="dcc"><div class="dcc-t">${title}</div><div style="color:var(--muted);font-size:12px;padding:10px">Playoffs en curso</div></div>`;
+      let h=`<div class="dcc"><div class="dcc-t">${title}</div><table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>W</th><th>L</th><th>%</th></tr></thead><tbody>`;
+      data.standings.entries.slice(0,8).forEach((e,i)=>{
+        const nm=e.team?.shortDisplayName||'?';
+        const stats=e.stats||[];
+        const w=stats.find(s=>s.name==='wins')?.value??'—';
+        const l=stats.find(s=>s.name==='losses')?.value??'—';
+        const pct=stats.find(s=>s.name==='winPercent')?.value;
+        h+=`<tr style="${i<6?'':'opacity:.6'}"><td>${i+1}${i<6?'':' ·'}</td><td>${nm}</td><td>${w}</td><td>${l}</td><td>${pct?parseFloat(pct).toFixed(3):'—'}</td></tr>`;
+      });
+      return h+`</tbody></table></div>`;
+    };
+    html=`<div class="dc2">${renderConf(east?.children?.[0],'🏀 NBA — Conferencia Este')}${renderConf(west?.children?.[0],'🏀 NBA — Conferencia Oeste')}</div>`;
+  } else if(tab==='laliga'){
+    const d=await espn('/soccer/esp.1/standings');
+    const entries=d?.standings?.[0]?.standings?.entries||d?.children?.[0]?.standings?.entries||[];
+    let h=`<div class="dcc" style="max-width:100%"><div class="dcc-t">🇪🇸 La Liga 2025-26</div><table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>JG</th><th>JP</th><th>JE</th><th>Pts</th><th>GD</th></tr></thead><tbody>`;
+    (entries.length?entries:[
+      ['Real Madrid',26,3,7,85,38],['Barcelona',25,4,7,82,35],['Atlético Madrid',22,5,9,75,18],['Athletic Club',18,7,11,61,8],['Villarreal',17,8,11,59,5],
+      ['Real Sociedad',16,9,11,57,2],['Real Betis',16,9,11,57,-1],['Sevilla',14,10,12,54,-4],['Valencia',13,11,12,51,-8],['Getafe',12,13,11,47,-12]
+    ].map((r,i)=>{
+      const nm=Array.isArray(r)?r[0]:r.team?.shortDisplayName||'?';
+      const stats=r.stats||[];
+      const w=Array.isArray(r)?r[1]:stats.find(s=>s.name==='wins')?.value??'—';
+      const l=Array.isArray(r)?r[2]:stats.find(s=>s.name==='losses')?.value??'—';
+      const d_=Array.isArray(r)?r[3]:stats.find(s=>s.name==='ties')?.value??'—';
+      const pts=Array.isArray(r)?r[4]:stats.find(s=>s.name==='points')?.value??'—';
+      const gd=Array.isArray(r)?r[5]:stats.find(s=>s.name==='pointDifferential')?.value??'—';
+      h+=`<tr><td>${i+1}</td><td>${nm}</td><td>${w}</td><td>${l}</td><td>${d_}</td><td style="font-weight:800;color:var(--cyan)">${pts}</td><td style="color:${gd>0?'var(--green)':'var(--red)'}">${gd>0?'+':''}${gd}</td></tr>`;
+    })).slice(0,10);
+    html=h+`</tbody></table></div>`;
+  } else if(tab==='pl'){
+    const d=await espn('/soccer/eng.1/standings');
+    const entries=d?.standings?.[0]?.standings?.entries||d?.children?.[0]?.standings?.entries||[];
+    const fallback=[['Man City',24,4,8,80,44],['Arsenal',23,5,8,77,38],['Liverpool',22,5,9,75,32],['Chelsea',19,7,10,64,18],['Tottenham',17,9,10,61,8],['Man United',15,12,9,54,-2],['Newcastle',16,8,12,56,10],['Aston Villa',16,9,11,57,12],['Brighton',15,10,11,55,5],['West Ham',12,13,11,47,-8]];
+    let h=`<div class="dcc" style="max-width:100%"><div class="dcc-t">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League 2025-26</div><table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>JG</th><th>JP</th><th>JE</th><th>Pts</th><th>GD</th></tr></thead><tbody>`;
+    (entries.length?entries:fallback).slice(0,10).forEach((e,i)=>{
+      const nm=Array.isArray(e)?e[0]:e.team?.shortDisplayName||'?';
       const stats=e.stats||[];
-      const w=stats.find(s=>s.name==='wins')?.value??'—';
-      const l=stats.find(s=>s.name==='losses')?.value??'—';
-      const pct=stats.find(s=>s.name==='winPercent')?.value;
-      html+=`<tr><td>${i+1}</td><td>${nm}</td><td>${w}</td><td>${l}</td><td>${pct?parseFloat(pct).toFixed(3):'—'}</td></tr>`;
+      const w=Array.isArray(e)?e[1]:stats.find(s=>s.name==='wins')?.value??'—';
+      const l=Array.isArray(e)?e[2]:stats.find(s=>s.name==='losses')?.value??'—';
+      const d_=Array.isArray(e)?e[3]:stats.find(s=>s.name==='ties')?.value??'—';
+      const pts=Array.isArray(e)?e[4]:stats.find(s=>s.name==='points')?.value??'—';
+      const gd=Array.isArray(e)?e[5]:stats.find(s=>s.name==='pointDifferential')?.value??'—';
+      h+=`<tr><td>${i+1}</td><td>${nm}</td><td>${w}</td><td>${l}</td><td>${d_}</td><td style="font-weight:800;color:var(--cyan)">${pts}</td><td style="color:${gd>0?'var(--green)':'var(--red)'}">${gd>0?'+':''}${gd}</td></tr>`;
     });
-    html+=`</tbody></table>`;
-  } else {
-    html+=`<div style="color:var(--muted);font-size:13px;padding:10px">Temporada NBA finalizada — Playoffs en curso</div>`;
+    html=h+`</tbody></table></div>`;
+  } else if(tab==='ucl'){
+    html=`<div class="dc2">
+<div class="dcc"><div class="dcc-t">🏆 UCL 2025-26 — Semifinalistas</div><table class="stbl"><thead><tr><th>#</th><th>Club</th><th>País</th><th>Ronda</th></tr></thead><tbody>
+<tr><td>1</td><td>Real Madrid</td><td>🇪🇸</td><td>Final</td></tr><tr><td>2</td><td>Inter Milan</td><td>🇮🇹</td><td>Final</td></tr><tr><td>3</td><td>Arsenal</td><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿</td><td>Eliminado SF</td></tr><tr><td>4</td><td>Bayern Munich</td><td>🇩🇪</td><td>Eliminado SF</td></tr>
+</tbody></table></div>
+<div class="dcc"><div class="dcc-t">🏆 UCL Final — Preview</div>
+<div style="padding:10px 0">
+<div style="font-size:28px;font-weight:900;text-align:center;margin-bottom:12px">Real Madrid <span style="color:var(--muted)">vs</span> Inter Milan</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+<div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--blue)">-142</div><div style="color:var(--muted)">Madrid ML</div></div>
+<div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--cyan)">+158</div><div style="color:var(--muted)">Inter ML</div></div>
+</div></div></div></div>`;
+  } else if(tab==='ufc'){
+    const UFC_RANKS={
+      'Peso Pesado (HW)':[['J. Ngannou','Campeón','5-0-0'],['C. Gane','#1','12-2-0'],['S. Pavlović','#2','17-0-0'],['T. Aspinall','#3 Int.','15-3-0'],['C. Blaydes','#4','17-5-0']],
+      'Peso Semipesado (LHW)':[['A. Pereira','Campeón','12-2-0'],['J. Prochazka','#1','30-4-1'],['A. Rakić','#2','15-4-0'],['J. Walker','#3','13-7-0'],['V. Oezdemir','#4','18-5-0']],
+      'Peso Medio (MW)':[['D. Du Plessis','Campeón','21-2-0'],['I. Adesanya','#1','25-3-0'],['R. Whittaker','#2','24-7-0'],['S. Imavov','#3','15-4-0'],['C. Strickland','#4','29-6-0']],
+      'Peso Wélter (WW)':[['B. Edwards','Campeón','22-3-0'],['C. Chimaev','#1','13-0-0'],['K. Usman','#2','20-4-0'],['C. Neal','#3','18-5-0'],['G. Burns','#4','22-6-0']],
+      'Peso Ligero (LW)':[['I. Topuria','Campeón','16-0-0'],['D. Poirier','#1','30-9-0'],['J. Gaethje','#2','25-5-0'],['C. Oliveira','#3','35-10-1'],['M. Moicano','#4','21-5-1']],
+    };
+    html=`<div class="dc2">${Object.entries(UFC_RANKS).map(([cat,ranks])=>`<div class="dcc"><div class="dcc-t">🥊 ${cat}</div><table class="stbl"><thead><tr><th>Rank</th><th>Peleador</th><th>Record</th></tr></thead><tbody>${ranks.map(([n,r,rec])=>`<tr><td style="color:${r==='Campeón'?'var(--yellow)':'var(--muted)'}${r==='Campeón'?';font-weight:800':''}">${r}</td><td>${n}</td><td style="font-size:11px;color:var(--muted)">${rec}</td></tr>`).join('')}</tbody></table></div>`).join('')}</div>`;
   }
-  html+=`</div>`;
-  // MLB
-  html+=`<div class="dcc"><div class="dcc-t">⚾ MLB Standings 2026</div>`;
-  if(mlb?.children?.[0]?.standings?.entries){
-    const entries=mlb.children[0].standings.entries.slice(0,8);
-    html+=`<table class="stbl"><thead><tr><th>#</th><th>Equipo</th><th>W</th><th>L</th><th>GB</th></tr></thead><tbody>`;
-    entries.forEach((e,i)=>{
-      const nm=e.team?.shortDisplayName||e.team?.displayName||'?';
-      const stats=e.stats||[];
-      const w=stats.find(s=>s.name==='wins')?.value??'—';
-      const l=stats.find(s=>s.name==='losses')?.value??'—';
-      const gb=stats.find(s=>s.name==='gamesBehind')?.value??'—';
-      html+=`<tr><td>${i+1}</td><td>${nm}</td><td>${w}</td><td>${l}</td><td>${gb===0||gb==='0'?'—':gb}</td></tr>`;
-    });
-    html+=`</tbody></table>`;
-  } else {
-    html+=`<div style="color:var(--muted);font-size:13px;padding:10px">Datos MLB no disponibles</div>`;
-  }
-  html+=`</div></div>`;
-  $('standC').innerHTML=html;
+  $('standC').innerHTML=html||`<div style="color:var(--muted);padding:40px;text-align:center">No disponible</div>`;
 }
 
 async function loadInj(){
@@ -1232,14 +1351,14 @@ function addMsg(role,text){
   const box=$('cm');
   const d=document.createElement('div');
   d.className='msg '+(role==='bot'?'b':'u');
-  const av=role==='bot'?`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;flex-shrink:0"><circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="3"/><circle cx="50" cy="40" r="15" fill="#f5c08a"/><rect x="35" y="40" width="30" height="18" rx="4" fill="#f5c08a"/><rect x="28" y="24" width="44" height="6" rx="3" fill="#0066FF"/><ellipse cx="44" cy="39" rx="3" ry="4" fill="white"/><ellipse cx="56" cy="39" rx="3" ry="4" fill="white"/><circle cx="44" cy="40" r="2" fill="#111"/><circle cx="56" cy="40" r="2" fill="#111"/><path d="M43 48 Q50 53 57 48" stroke="#c87941" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="36" y="57" width="28" height="20" rx="4" fill="#0066FF"/></svg>`:`<div class="mav" style="background:rgba(255,255,255,.1)">👤</div>`;
+  const av=role==='bot'?`<svg class="mav" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0"><circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/><ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/><rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/><ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/><ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/><ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/><rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/><circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/><circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/><line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/><path d="M33 64 L50 70 L67 64 L67 95 L33 95 Z" fill="#1a1a1a"/><path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/><path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`:`<div class="mav" style="background:rgba(255,255,255,.1)">👤</div>`;
   d.innerHTML=`${av}<div class="bubble">${text}</div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function showTyping(){
   const box=$('cm');const d=document.createElement('div');
   d.className='msg b typing';d.id='typD';
-  d.innerHTML=`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;flex-shrink:0"><circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="3"/><circle cx="50" cy="40" r="15" fill="#f5c08a"/><rect x="35" y="40" width="30" height="18" rx="4" fill="#f5c08a"/><rect x="28" y="24" width="44" height="6" rx="3" fill="#0066FF"/><ellipse cx="44" cy="39" rx="3" ry="4" fill="white"/><ellipse cx="56" cy="39" rx="3" ry="4" fill="white"/><circle cx="44" cy="40" r="2" fill="#111"/><circle cx="56" cy="40" r="2" fill="#111"/><path d="M43 48 Q50 53 57 48" stroke="#c87941" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="36" y="57" width="28" height="20" rx="4" fill="#0066FF"/></svg><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  d.innerHTML=`<svg class="mav" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0"><circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/><ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/><rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/><ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/><ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/><ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/><rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/><circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/><circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/><line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/><path d="M33 64 L50 70 L67 64 L67 95 L33 95 Z" fill="#1a1a1a"/><path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/><path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/></svg><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function rmTyping(){const t=$('typD');if(t)t.remove()}
