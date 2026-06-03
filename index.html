@@ -428,39 +428,7 @@ section.active{display:block}
   <div class="sh"><div class="sh-title">🧠 El Profe</div><div class="sh-sub">Tu tipster personal — memoria, análisis profundo, habla directo</div></div>
   <div class="chat-wrap">
     <div class="chat-hdr">
-      <svg class="profe-bitmoji" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px">
-        <!-- Money Heist Professor style -->
-        <circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/>
-        <!-- Hair dark -->
-        <ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/>
-        <rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/>
-        <!-- Face -->
-        <ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/>
-        <!-- Ears -->
-        <ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/>
-        <ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/>
-        <!-- Glasses frames -->
-        <rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="1.8"/>
-        <rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="1.8"/>
-        <line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/>
-        <line x1="35" y1="45" x2="31" y2="44" stroke="#1a1a1a" stroke-width="1.5"/>
-        <line x1="65" y1="45" x2="69" y2="44" stroke="#1a1a1a" stroke-width="1.5"/>
-        <!-- Eyes -->
-        <circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/>
-        <circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/>
-        <!-- Nose -->
-        <path d="M48 51 Q50 54 52 51" stroke="#c09070" stroke-width="1.2" fill="none"/>
-        <!-- Serious thin mouth -->
-        <line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- Suit collar -->
-        <path d="M33 64 L50 70 L67 64 L67 90 L33 90 Z" fill="#1a1a1a"/>
-        <!-- Red tie -->
-        <path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/>
-        <!-- White shirt -->
-        <rect x="45" y="65" width="10" height="5" fill="white"/>
-        <!-- Red beret hint at top -->
-        <path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/>
-      </svg>
+      <svg class="profe-bitmoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;border-radius:12px"><rect width="100" height="100" fill="#CC1A1A"/><ellipse cx="50" cy="27" rx="24" ry="15" fill="#111"/><path d="M26 35 Q21 52 23 70 Q28 77 32 72 Q30 56 30 40Z" fill="#111"/><path d="M74 35 Q79 52 77 70 Q72 77 68 72 Q70 56 70 40Z" fill="#111"/><ellipse cx="50" cy="53" rx="19" ry="22" fill="#D4906A"/><ellipse cx="31" cy="53" rx="4" ry="5.5" fill="#D4906A"/><ellipse cx="69" cy="53" rx="4" ry="5.5" fill="#D4906A"/><circle cx="41" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><circle cx="59" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><line x1="32" y1="48" x2="27" y2="47" stroke="#111" stroke-width="2"/><line x1="68" y1="48" x2="73" y2="47" stroke="#111" stroke-width="2"/><circle cx="41" cy="50" r="4" fill="#1a0800"/><circle cx="59" cy="50" r="4" fill="#1a0800"/><path d="M47 57 Q50 62 53 57" stroke="#a06040" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M31 63 Q32 75 40 81 Q50 85 60 81 Q68 75 69 63 Q60 69 50 70 Q40 69 31 63Z" fill="#111"/><path d="M40 62 Q45 67 50 65 Q55 67 60 62 Q55 60 50 61 Q45 60 40 62Z" fill="#111"/></svg>
       <div style="flex:1"><div class="ch-name">El Profe</div><div class="ch-st" id="profeSt">Online</div></div>
       <div class="mem-info" id="memI">Memoria: 0 picks</div>
       <button onclick="toggleApiKey()" title="Configurar" style="background:transparent;border:none;color:rgba(255,255,255,.2);padding:4px 6px;font-size:12px;cursor:pointer">⚙</button>
@@ -588,24 +556,36 @@ async function analyze(){
   };next();
 }
 
+// Known teams — avoid misidentifying as player names
+const TEAM_RE=/yankees?|dodgers?|astros?|braves?|mets\b|padres?|cubs\b|cardinals?|red sox|rays\b|mariners?|giants?|angels?|royals?|pirates?|brewers?|tigers?|guardians?|twins?|orioles?|athletics?|white sox|rangers?|phillies?|nationals?|marlins?|rockies?|diamondbacks?|reds\b|celtics?|lakers?|heat\b|warriors?|bucks?|nuggets?|suns?|clippers?|76ers?|nets\b|knicks?|raptors?|bulls?|cavaliers?|pistons?|hawks?|hornets?|pacers?|magic\b|wizards?|thunder\b|blazers?|jazz\b|grizzlies?|pelicans?|spurs?|mavs?|mavericks?|rockets?|timberwolves?|kings?|chiefs?|ravens?|eagles?|cowboys?|packers?|bears?|saints?|seahawks?|rams\b|49ers?|bucs?|dolphins?|patriots?|bills?|jets\b|steelers?|raiders?|broncos?|chargers?|bengals?|browns?|falcons?|panthers?|vikings?|lions?|commanders?|real madrid|barcelona|atletico|manchester|arsenal|chelsea|liverpool|tottenham/i;
 // Detect player prop: "LeBron over 28.5 pts", "Ohtani over 7 strikeouts", etc.
 function detectProp(inp){
   const lo=inp.toLowerCase();
-  const ouM=lo.match(/\b(over|under|o\/|u\/|ov |un )\s*(\d+\.?\d*)/i)||lo.match(/(\d+\.?\d*)\s*(over|under)/i);
-  if(!ouM)return null;
+  if(!(/\bover\b|\bunder\b/i.test(lo)))return null;
+  // Require a stat keyword — otherwise it's a team over/under total
+  const STATS={pts:[' pts ',' puntos ',' points ',' pt '],strikeouts:[' strikeouts ',' strikeout ',' ponches ',' ks ',' k ',' k9 '],hits:[' hits ',' hit '],hr:[' hr ',' home run',' jonron'],ast:[' ast ',' assists ',' asistencias '],reb:[' reb ',' rebounds ',' rebotes '],yds:[' yds ',' yards ',' yardas '],goals:[' goals ',' goles '],threes:[' 3s ',' triples ',' threes '],saves:[' saves ',' atajadas '],inn:[' innings ',' inn '],era:[' era '],whip:[' whip ']};
+  const pad=' '+lo+' ';
+  let statKey=null;
+  for(const [k,v] of Object.entries(STATS)){if(v.some(a=>pad.includes(a))){statKey=k;break;}}
+  if(!statKey)return null; // no player stat = team total, not a prop
   const lineM=inp.match(/(\d+\.?\d*)/);
   if(!lineM)return null;
   const line=parseFloat(lineM[1]);
-  const statMap={
-    'pts':['pts','puntos','points','point','ptos'],'strikeouts':['strikeout','strikeouts','ponches','ks','k s'],'hits':['hits','hit','imparables','sencillo'],'hr':['hr','home run','homerun','jonrón'],'ast':['ast','assists','asistencias','asist'],'reb':['reb','rebounds','rebotes','rebote'],'yds':['yds','yards','yardas'],'goals':['goals','goles','gol'],'3s':['3s','threes','triples','tres','3pt'],'saves':['saves','atajadas'],'inn':['innings','inn'],'k/9':['k/9','k9'],'era':['era'],'whip':['whip']};
-  let statKey='pts';
-  for(const [k,aliases] of Object.entries(statMap)){if(aliases.some(a=>lo.includes(a))){statKey=k;break;}}
-  const isOver=lo.includes('over')||lo.includes('ov ')||/\d\s*o\//.test(lo);
-  // Player name = everything before the number or over/under keyword
-  const beforeLine=inp.slice(0,inp.search(/\d|over|under/i)).trim().replace(/[,\s-]+$/,'');
-  const playerName=beforeLine.length>2?beforeLine:inp.replace(/over|under|\d+\.?\d*/gi,'').trim().replace(/[,\s-]+$/,'').replace(/^[,\s-]+/,'');
-  if(playerName.length<2)return null;
-  return{playerName,line,stat:statKey,isOver};
+  const isOver=/\bover\b/i.test(lo);
+  const ouIdx=lo.search(/\bover\b|\bunder\b/i);
+  let pName=inp.slice(0,ouIdx).trim().replace(/[,\s]+$/,'');
+  if(pName.length<2)pName=inp.replace(/\b(over|under)\b|\d+\.?\d*|\b(pts?|puntos?|strikeouts?|hits?|hr|ast|reb|yds?|goles?|triples?|ponches?|innings?|era|whip)\b/gi,'').trim();
+  if(pName.length<2||TEAM_RE.test(pName))return null;
+  return{playerName:pName.replace(/^\s+|\s+$/g,''),line,stat:statKey,isOver};
+}
+// Label bet type for UI
+function betTypeLabel(inp){
+  const lo=inp.toLowerCase();
+  if(detectProp(inp))return'👤 Player Prop';
+  if(/\bml\b|moneyline|money line/.test(lo))return'💰 ML';
+  if(/spread|ats/.test(lo)||(/-\d|\+\d/).test(inp))return'📏 Spread ATS';
+  if(/\bover\b|\bunder\b/i.test(lo))return'📊 O/U Total';
+  return'🎯 Pick';
 }
 function buildPropResult(inp,prop){
   const r=rng(seed()+hash(inp));
@@ -642,6 +622,7 @@ function buildPropResult(inp,prop){
     <div style="font-size:11px;color:var(--cyan);margin-top:2px">${statLabel} Prop</div>
   </div>
   <div>
+    <div style="font-size:11px;color:var(--cyan);font-weight:700;letter-spacing:1px;margin-bottom:6px">👤 PLAYER PROP</div>
     <div style="font-size:22px;font-weight:900;margin-bottom:4px">${isOver?'OVER':'UNDER'} <span style="color:var(--cyan)">${line}</span> ${statLabel}</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
       <span class="tag b">${odds>0?'+':''}${odds}</span>
@@ -795,6 +776,7 @@ function buildResult(inp,realGame=null){
     <div class="cring-txt"><div class="cring-pct" style="color:${ring_c}">${Math.round(con*100)}%</div><div class="cring-lbl">CONSENSO</div></div>
   </div>
   <div>
+    <div style="font-size:11px;color:var(--cyan);font-weight:700;letter-spacing:1px;margin-bottom:4px">${betTypeLabel(inp)}</div>
     <div class="exec-verdict ${vc}">${vrd} <span class="stars">${stars}</span></div>
     <div class="exec-sub">${inp}</div>
     <div class="tags">
@@ -1555,14 +1537,14 @@ function addMsg(role,text){
   const box=$('cm');
   const d=document.createElement('div');
   d.className='msg '+(role==='bot'?'b':'u');
-  const av=role==='bot'?`<svg class="mav" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0"><circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/><ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/><rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/><ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/><ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/><ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/><rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/><circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/><circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/><line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/><path d="M33 64 L50 70 L67 64 L67 95 L33 95 Z" fill="#1a1a1a"/><path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/><path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`:`<div class="mav" style="background:rgba(255,255,255,.1)">👤</div>`;
+  const av=role==='bot'?`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0;border-radius:8px"><rect width="100" height="100" fill="#CC1A1A"/><ellipse cx="50" cy="27" rx="24" ry="15" fill="#111"/><path d="M26 35 Q21 52 23 70 Q28 77 32 72 Q30 56 30 40Z" fill="#111"/><path d="M74 35 Q79 52 77 70 Q72 77 68 72 Q70 56 70 40Z" fill="#111"/><ellipse cx="50" cy="53" rx="19" ry="22" fill="#D4906A"/><ellipse cx="31" cy="53" rx="4" ry="5.5" fill="#D4906A"/><ellipse cx="69" cy="53" rx="4" ry="5.5" fill="#D4906A"/><circle cx="41" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><circle cx="59" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><line x1="32" y1="48" x2="27" y2="47" stroke="#111" stroke-width="2"/><line x1="68" y1="48" x2="73" y2="47" stroke="#111" stroke-width="2"/><circle cx="41" cy="50" r="4" fill="#1a0800"/><circle cx="59" cy="50" r="4" fill="#1a0800"/><path d="M47 57 Q50 62 53 57" stroke="#a06040" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M31 63 Q32 75 40 81 Q50 85 60 81 Q68 75 69 63 Q60 69 50 70 Q40 69 31 63Z" fill="#111"/><path d="M40 62 Q45 67 50 65 Q55 67 60 62 Q55 60 50 61 Q45 60 40 62Z" fill="#111"/></svg>`:`<div class="mav" style="background:rgba(255,255,255,.1)">👤</div>`;
   d.innerHTML=`${av}<div class="bubble">${text}</div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function showTyping(){
   const box=$('cm');const d=document.createElement('div');
   d.className='msg b typing';d.id='typD';
-  d.innerHTML=`<svg class="mav" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0"><circle cx="50" cy="55" r="48" fill="#0d1f3a" stroke="#cc0000" stroke-width="2"/><ellipse cx="50" cy="33" rx="20" ry="14" fill="#1a1a1a"/><rect x="30" y="33" width="40" height="8" fill="#1a1a1a"/><ellipse cx="50" cy="45" rx="17" ry="19" fill="#e8c49a"/><ellipse cx="33" cy="46" rx="4" ry="5" fill="#e8c49a"/><ellipse cx="67" cy="46" rx="4" ry="5" fill="#e8c49a"/><rect x="35" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><rect x="53" y="41" width="12" height="9" rx="3" fill="none" stroke="#1a1a1a" stroke-width="2"/><line x1="47" y1="45" x2="53" y2="45" stroke="#1a1a1a" stroke-width="1.5"/><circle cx="41" cy="45" r="2.5" fill="#2a1a0a"/><circle cx="59" cy="45" r="2.5" fill="#2a1a0a"/><line x1="44" y1="57" x2="56" y2="57" stroke="#b07050" stroke-width="1.5" stroke-linecap="round"/><path d="M33 64 L50 70 L67 64 L67 95 L33 95 Z" fill="#1a1a1a"/><path d="M47 68 L50 70 L53 68 L52 85 L50 88 L48 85 Z" fill="#cc0000"/><path d="M32 30 Q50 18 68 30" stroke="#cc0000" stroke-width="3" fill="none" stroke-linecap="round"/></svg><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  d.innerHTML=`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0;border-radius:8px"><rect width="100" height="100" fill="#CC1A1A"/><ellipse cx="50" cy="27" rx="24" ry="15" fill="#111"/><path d="M26 35 Q21 52 23 70 Q28 77 32 72 Q30 56 30 40Z" fill="#111"/><path d="M74 35 Q79 52 77 70 Q72 77 68 72 Q70 56 70 40Z" fill="#111"/><ellipse cx="50" cy="53" rx="19" ry="22" fill="#D4906A"/><ellipse cx="31" cy="53" rx="4" ry="5.5" fill="#D4906A"/><ellipse cx="69" cy="53" rx="4" ry="5.5" fill="#D4906A"/><circle cx="41" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><circle cx="59" cy="50" r="9" fill="none" stroke="#111" stroke-width="2.5"/><line x1="32" y1="48" x2="27" y2="47" stroke="#111" stroke-width="2"/><line x1="68" y1="48" x2="73" y2="47" stroke="#111" stroke-width="2"/><circle cx="41" cy="50" r="4" fill="#1a0800"/><circle cx="59" cy="50" r="4" fill="#1a0800"/><path d="M47 57 Q50 62 53 57" stroke="#a06040" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M31 63 Q32 75 40 81 Q50 85 60 81 Q68 75 69 63 Q60 69 50 70 Q40 69 31 63Z" fill="#111"/><path d="M40 62 Q45 67 50 65 Q55 67 60 62 Q55 60 50 61 Q45 60 40 62Z" fill="#111"/></svg><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function rmTyping(){const t=$('typD');if(t)t.remove()}
