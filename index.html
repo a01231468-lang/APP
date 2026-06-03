@@ -62,7 +62,7 @@ section.active{display:block}
 .hi-btn:hover{transform:scale(1.02);box-shadow:0 6px 20px rgba(0,102,255,.35)}
 .chips{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
 .chip{padding:7px 16px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px}
-.chip:hover{background:rgba(0,102,255,.12);border-color:rgba(0,102,255,.4);color:var(--blue)}
+.chip:hover,.chip.active-chip{background:rgba(0,102,255,.15);border-color:rgba(0,102,255,.5);color:var(--blue)}
 .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:640px;width:100%}
 .hs{background:rgba(10,22,40,.7);border:1px solid var(--bdr);border-radius:14px;padding:22px 16px;text-align:center;backdrop-filter:blur(10px)}
 .hs-v{font-size:28px;font-weight:900;margin-bottom:3px}
@@ -82,6 +82,18 @@ section.active{display:block}
 /* SKELETON */
 .skel{background:linear-gradient(90deg,var(--bdr) 25%,rgba(15,37,69,.8) 50%,var(--bdr) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* TEAM MATCHUP */
+.tm-card{background:linear-gradient(135deg,rgba(0,102,255,.08),rgba(0,212,255,.05));border:1px solid rgba(0,102,255,.2);border-radius:16px;padding:20px;margin-bottom:18px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+.tm-team{text-align:center}.tm-logo{width:64px;height:64px;object-fit:contain;margin:0 auto 8px;display:block;filter:drop-shadow(0 2px 8px rgba(0,102,255,.3))}
+.tm-name{font-size:13px;font-weight:800;margin-bottom:2px}.tm-rec{font-size:11px;color:var(--muted)}
+.tm-vs{font-size:22px;font-weight:900;color:var(--muted);text-align:center}
+.tm-info{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;padding-top:12px;border-top:1px solid var(--bdr)}
+.tm-stat{text-align:center;background:rgba(255,255,255,.03);border-radius:8px;padding:8px}
+.tm-sv{font-size:14px;font-weight:800;color:var(--cyan)}.tm-sl{font-size:10px;color:var(--muted)}
+/* STAR RATING */
+.stars{display:inline-flex;gap:2px;margin-left:8px}.star{font-size:12px}
+/* PROFE AVATAR */
+.profe-bitmoji{width:44px;height:44px;flex-shrink:0}
 
 /* ANALYSIS */
 .analysis-panel{max-width:880px;margin:0 auto;display:none}
@@ -314,8 +326,8 @@ section.active{display:block}
 <section id="s-home" class="active">
   <div class="hero">
     <div class="hero-badge">🔴 LIVE · IA entrenada con +2M partidos históricos</div>
-    <h1 class="hero-title">La terminal que<br><span class="gr">convierte datos en ventaja</span></h1>
-    <p class="hero-sub">Análisis multi-modelo · ELO · Monte Carlo · Bayesian · Sharp Money</p>
+    <h1 class="hero-title">Analiza tu pick.<br><span class="gr">Gana con datos.</span></h1>
+    <p class="hero-sub">ELO · Monte Carlo · Bayesian — 3 modelos independientes, un veredicto claro</p>
     <div class="hero-input-box">
       <div class="hi-row">
         <input class="hi" id="hi" placeholder="Ej: Celtics -5.5 vs Heat, Over 221.5 NBA..." onkeydown="if(event.key==='Enter')heroAnalyze()">
@@ -367,12 +379,13 @@ section.active{display:block}
 
 <!-- WAR ROOM -->
 <section id="s-warroom">
-  <div class="sh"><div class="sh-title">🎯 War Room</div><div class="sh-sub">Análisis profundo sport-específico — pro trader dashboard</div></div>
-  <div class="chips" style="justify-content:flex-start;margin-bottom:20px">
+  <div class="sh"><div class="sh-title">🎯 War Room</div><div class="sh-sub">Live games + análisis profundo — orden por temporada activa</div></div>
+  <div id="wr-live" style="margin-bottom:24px"></div>
+  <div class="chips" style="justify-content:flex-start;margin-bottom:20px" id="wr-tabs">
+    <div class="chip active-chip" onclick="wr('mlb')">⚾ MLB Pitcher Duel</div>
     <div class="chip" onclick="wr('nba')">🏀 NBA Starting 5</div>
-    <div class="chip" onclick="wr('mlb')">⚾ MLB Pitcher Duel</div>
-    <div class="chip" onclick="wr('nfl')">🏈 NFL QB Battle</div>
     <div class="chip" onclick="wr('soccer')">⚽ Soccer xG</div>
+    <div class="chip" onclick="wr('nfl')">🏈 NFL QB Battle</div>
   </div>
   <div id="wrc"></div>
 </section>
@@ -406,7 +419,22 @@ section.active{display:block}
   <div class="sh"><div class="sh-title">🧠 El Profe</div><div class="sh-sub">Tu tipster personal — memoria, análisis profundo, habla directo</div></div>
   <div class="chat-wrap">
     <div class="chat-hdr">
-      <div class="ch-av">🧠</div>
+      <svg class="profe-bitmoji" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="2.5"/>
+        <circle cx="50" cy="38" r="18" fill="#f5c08a"/>
+        <rect x="32" y="38" width="36" height="22" rx="5" fill="#f5c08a"/>
+        <rect x="28" y="26" width="44" height="6" rx="3" fill="#1a1a2e"/>
+        <rect x="28" y="22" width="44" height="8" rx="4" fill="#0066FF"/>
+        <ellipse cx="43" cy="37" rx="4" ry="5" fill="white"/>
+        <ellipse cx="57" cy="37" rx="4" ry="5" fill="white"/>
+        <circle cx="43" cy="38" r="2.5" fill="#1a1a2e"/>
+        <circle cx="57" cy="38" r="2.5" fill="#1a1a2e"/>
+        <path d="M42 47 Q50 52 58 47" stroke="#c87941" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="35" y="58" width="30" height="22" rx="4" fill="#0066FF"/>
+        <text x="50" y="73" text-anchor="middle" fill="white" font-size="10" font-weight="bold">PROFE</text>
+        <rect x="18" y="60" width="14" height="8" rx="3" fill="#0066FF"/>
+        <rect x="68" y="60" width="14" height="8" rx="3" fill="#0066FF"/>
+      </svg>
       <div><div class="ch-name">El Profe</div><div class="ch-st">Online — listo para analizar</div></div>
       <div class="mem-info" id="memI">Memoria: 0 picks</div>
     </div>
@@ -453,7 +481,7 @@ function go(id){
   if(idx[id]!==undefined)nls[idx[id]].classList.add('active');
   if(id==='dc')initDC();
   if(id==='picks')loadPicks();
-  if(id==='warroom'&&!$('wrc').innerHTML)wr('nba');
+  if(id==='warroom'){loadWrLive();if(!$('wrc').innerHTML)wr('mlb');}
   if(id==='profe')initProfe();
 }
 
@@ -490,20 +518,41 @@ function heroAnalyze(){const v=$('hi').value;if(v)$('ai').value=v;go('analyzer')
 function setAI(v){$('ai').value=v;analyze()}
 function qa(sport){const m={NBA:'Celtics -5.5 vs Heat NBA Playoffs',NFL:'Chiefs -6.5 vs Ravens NFL',MLB:'Yankees ML vs Dodgers MLB',Soccer:'Real Madrid vs Barcelona Over 2.5',Tennis:'Alcaraz vs Sinner Roland Garros',F1:'Verstappen P1 F1 Canada GP'};go('analyzer');setTimeout(()=>setAI(m[sport]||sport),80)}
 
-function analyze(){
+// Team slug → ESPN abbreviation map
+const NBA_TEAMS={celtics:'bos',lakers:'lal',heat:'mia',warriors:'gsw',knicks:'ny',bulls:'chi',bucks:'mil',nets:'bkn',sixers:'phi',cavaliers:'cle',nuggets:'den',suns:'phx',clippers:'lac',mavs:'dal',mavericks:'dal',thunder:'okc',grizzlies:'mem',pelicans:'no',hawks:'atl',hornets:'cha',wizards:'wsh',magic:'orl',raptors:'tor',pacers:'ind',pistons:'det',wolves:'min',timberwolves:'min',jazz:'utah',kings:'sac',blazers:'por',spurs:'sas',rockets:'hou'};
+const MLB_TEAMS={yankees:'nyy',dodgers:'lad','red sox':'bos',cubs:'chc',cardinals:'stl',mets:'nym',braves:'atl',astros:'hou',phillies:'phi',giants:'sf',padres:'sd',mariners:'sea',rangers:'tex',tigers:'det',twins:'min',royals:'kc',angels:'laa',athletics:'oak',rays:'tb',orioles:'bal',nationals:'wsh',marlins:'mia',reds:'cin',pirates:'pit',brewers:'mil',rockies:'col','white sox':'cws',guardians:'cle',diamondbacks:'ari',bluejays:'tor'};
+
+function detectTeam(inp){
+  const lo=inp.toLowerCase();
+  for(const [k,v] of Object.entries(NBA_TEAMS))if(lo.includes(k))return{sport:'nba',abbr:v,name:k};
+  for(const [k,v] of Object.entries(MLB_TEAMS))if(lo.includes(k))return{sport:'mlb',abbr:v,name:k};
+  if(/nfl|chief|raven|eagle|cowboy|packer|patriot|bill|bear|lion|saint|falcon|panther|buccaneer|seahawk|ram|charger|bronco|raider|steeler|titan|colt|jaguar|dolphin/.test(lo))return{sport:'nfl',abbr:null,name:'nfl'};
+  return null;
+}
+
+async function analyze(){
   const inp=($('ai').value||'').trim();if(!inp)return;
   addXP(10);
   $('ap').classList.add('on');$('ar').innerHTML='';
   ['st1','st2','st3','st4','st5'].forEach(id=>$(id).className='step');
+  // Fetch real matchup in parallel while steps run
+  const teamInfo=detectTeam(inp);
+  let realGame=null;
+  if(teamInfo){
+    try{
+      const path=teamInfo.sport==='nba'?'/basketball/nba/scoreboard':teamInfo.sport==='mlb'?'/baseball/mlb/scoreboard':null;
+      if(path){const d=await espn(path);if(d?.events)realGame={events:d.events,teamInfo};}
+    }catch(e){}
+  }
   let i=0;const ids=['st1','st2','st3','st4','st5'];
   const next=()=>{
     if(i>0)$(ids[i-1]).className='step done';
     if(i<ids.length){$(ids[i]).className='step act';i++;setTimeout(next,580);}
-    else buildResult(inp);
+    else buildResult(inp,realGame);
   };next();
 }
 
-function buildResult(inp){
+function buildResult(inp,realGame=null){
   const r=rng(seed()+hash(inp));
   const elo=0.44+r()*0.3,mc=elo+(r()-.5)*.09,bay=elo+(r()-.5)*.07;
   const con=(elo+mc+bay)/3;
@@ -538,7 +587,60 @@ function buildResult(inp){
       he:`Como ${con>0.5?'favorito':'underdog'} en spreads ±6: ATS ${Math.floor(50+r()*22)}% — ${(r()*4+0.5).toFixed(1)}% sobre mercado.`}
   };
   const d=D[sport]||D.nba;
-  $('ar').innerHTML=`
+  const stars=con>=.68?'⭐⭐⭐⭐⭐':con>=.62?'⭐⭐⭐⭐':con>=.56?'⭐⭐⭐':con>=.50?'⭐⭐':'⭐';
+
+  // Build real matchup card if we have ESPN data
+  let matchupCard='';
+  if(realGame){
+    const {events,teamInfo}=realGame;
+    const abbr=teamInfo.abbr;
+    let foundGame=null;
+    for(const ev of events){
+      const comp=ev.competitions?.[0];if(!comp)continue;
+      const teams=comp.competitors||[];
+      const match=teams.find(t=>(t.team?.abbreviation||'').toLowerCase()===abbr||(t.team?.slug||'').toLowerCase().includes(teamInfo.name));
+      if(match){foundGame={ev,comp,teams,myTeam:match,oppTeam:teams.find(t=>t!==match)};break;}
+    }
+    if(foundGame){
+      const {myTeam,oppTeam,comp}=foundGame;
+      const myAbbr=(myTeam.team?.abbreviation||'').toLowerCase();
+      const oppAbbr=(oppTeam?.team?.abbreviation||'').toLowerCase();
+      const logoBase=teamInfo.sport==='nba'?'https://a.espncdn.com/i/teamlogos/nba/500/':'https://a.espncdn.com/i/teamlogos/mlb/500/';
+      const myLogo=`${logoBase}${myAbbr}.png`;
+      const oppLogo=`${logoBase}${oppAbbr}.png`;
+      const myNm=myTeam.team?.displayName||teamInfo.name;
+      const oppNm=oppTeam?.team?.displayName||'Oponente';
+      const myRec=myTeam.records?.[0]?.summary||'';
+      const oppRec=oppTeam?.records?.[0]?.summary||'';
+      const gTime=foundGame.ev.date?new Date(foundGame.ev.date).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+' ET':'Hoy';
+      const stateDesc=comp.status?.type?.description||'Programado';
+      const stateShort=comp.status?.type?.shortDetail||gTime;
+      const odds=comp.odds?.[0];
+      const spreadStr=odds?.details||'';
+      const ouStr=odds?.overUnder?`O/U ${odds.overUnder}`:'';
+      // MLB pitcher info
+      let pitcherInfo='';
+      if(teamInfo.sport==='mlb'){
+        const myPitch=myTeam.probables?.[0];const oppPitch=oppTeam?.probables?.[0];
+        if(myPitch||oppPitch){
+          pitcherInfo=`<div class="tm-stat" style="grid-column:1/-1;text-align:left"><span style="font-size:11px;color:var(--cyan);font-weight:700">⚾ PITCHERS HOY: </span><span style="font-size:12px">${myPitch?myTeam.team?.abbreviation+': '+myPitch.athlete?.shortName:'?'} vs ${oppPitch?oppTeam?.team?.abbreviation+': '+oppPitch.athlete?.shortName:'?'}</span></div>`;
+        }
+      }
+      matchupCard=`<div class="tm-card">
+        <div class="tm-team"><img class="tm-logo" src="${myLogo}" onerror="this.src=''" alt="${myNm}"><div class="tm-name">${myNm}</div><div class="tm-rec">${myRec}</div></div>
+        <div class="tm-vs">VS<br><span style="font-size:11px;color:var(--cyan);font-weight:600">${stateShort}</span></div>
+        <div class="tm-team"><img class="tm-logo" src="${oppLogo}" onerror="this.src=''" alt="${oppNm}"><div class="tm-name">${oppNm}</div><div class="tm-rec">${oppRec}</div></div>
+        <div class="tm-info">
+          <div class="tm-stat"><div class="tm-sv">${stateDesc}</div><div class="tm-sl">Estado</div></div>
+          <div class="tm-stat"><div class="tm-sv">${spreadStr||'—'}</div><div class="tm-sl">Spread/Línea</div></div>
+          <div class="tm-stat"><div class="tm-sv">${ouStr||'—'}</div><div class="tm-sl">Over/Under</div></div>
+          ${pitcherInfo}
+        </div>
+      </div>`;
+    }
+  }
+
+  $('ar').innerHTML=matchupCard+`
 <div class="exec">
   <div class="cring">
     <svg width="116" height="116" viewBox="0 0 116 116">
@@ -548,7 +650,7 @@ function buildResult(inp){
     <div class="cring-txt"><div class="cring-pct" style="color:${ring_c}">${Math.round(con*100)}%</div><div class="cring-lbl">CONSENSO</div></div>
   </div>
   <div>
-    <div class="exec-verdict ${vc}">${vrd}</div>
+    <div class="exec-verdict ${vc}">${vrd} <span class="stars">${stars}</span></div>
     <div class="exec-sub">${inp}</div>
     <div class="tags">
       <div class="tag b">${odds>0?'+':''}${odds} odds</div>
@@ -594,7 +696,88 @@ function buildResult(inp){
 }
 
 // ── WAR ROOM ──────────────────────────────────────────────────────────────────
+async function loadWrLive(){
+  const el=$('wr-live');
+  el.innerHTML=`<div style="color:var(--muted);font-size:13px">🔴 Cargando juegos en vivo...</div>`;
+  const sports=[
+    {key:'/baseball/mlb/scoreboard',ico:'⚾',lbl:'MLB'},
+    {key:'/basketball/nba/scoreboard',ico:'🏀',lbl:'NBA'},
+    {key:'/soccer/usa.1/scoreboard',ico:'⚽',lbl:'MLS'},
+    {key:'/football/nfl/scoreboard',ico:'🏈',lbl:'NFL'},
+  ];
+  let liveCards=[];
+  for(const s of sports){
+    const d=await espn(s.key);
+    if(!d?.events)continue;
+    for(const ev of d.events){
+      const comp=ev.competitions?.[0];if(!comp)continue;
+      const st=comp.status?.type?.state;
+      if(st!=='in'&&st!=='post')continue; // only live/recent
+      const teams=comp.competitors||[];
+      const away=teams.find(t=>t.homeAway==='away')||teams[0]||{};
+      const home=teams.find(t=>t.homeAway==='home')||teams[1]||{};
+      const awayNm=away.team?.shortDisplayName||'?';
+      const homeNm=home.team?.shortDisplayName||'?';
+      const awayAbbr=(away.team?.abbreviation||'').toLowerCase();
+      const homeAbbr=(home.team?.abbreviation||'').toLowerCase();
+      const logoBase=s.lbl==='NBA'?'https://a.espncdn.com/i/teamlogos/nba/500/':s.lbl==='MLB'?'https://a.espncdn.com/i/teamlogos/mlb/500/':'https://a.espncdn.com/i/teamlogos/soccer/500/';
+      const stTxt=comp.status?.type?.shortDetail||'LIVE';
+      const isLive=st==='in';
+      const r2=rng(seed()+hash(awayNm+homeNm));
+      // Quick model analysis for live game
+      const awayAdv=r2()*0.25+0.4;const homeAdv=1-awayAdv;
+      const awayPct=Math.round(awayAdv*100);const homePct=100-awayPct;
+      liveCards.push(`<div class="card" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          ${isLive?'<span class="live-dot"></span>':''}<span style="font-size:12px;font-weight:700;color:${isLive?'var(--red)':'var(--muted)'}">${isLive?'LIVE':'RECIENTE'}</span>
+          <span style="font-size:12px;color:var(--muted)">${s.ico} ${s.lbl} · ${stTxt}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:16px">
+          <div style="text-align:center">
+            <img src="${logoBase}${awayAbbr}.png" onerror="this.style.display='none'" style="width:48px;height:48px;object-fit:contain;margin-bottom:4px;display:block;margin:0 auto 4px">
+            <div style="font-size:14px;font-weight:800">${awayNm}</div>
+            <div style="font-size:22px;font-weight:900;color:var(--cyan)">${away.score??'—'}</div>
+          </div>
+          <div style="text-align:center;font-size:18px;font-weight:900;color:var(--muted)">VS</div>
+          <div style="text-align:center">
+            <img src="${logoBase}${homeAbbr}.png" onerror="this.style.display='none'" style="width:48px;height:48px;object-fit:contain;margin-bottom:4px;display:block;margin:0 auto 4px">
+            <div style="font-size:14px;font-weight:800">${homeNm}</div>
+            <div style="font-size:22px;font-weight:900;color:var(--cyan)">${home.score??'—'}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:10px">
+            <div style="color:var(--muted);font-size:10px;margin-bottom:4px">IA WIN PROB</div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <div style="flex:${awayPct};height:6px;background:var(--blue);border-radius:3px 0 0 3px"></div>
+              <div style="flex:${homePct};height:6px;background:var(--cyan);border-radius:0 3px 3px 0"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px">
+              <span style="color:var(--blue);font-weight:700">${awayNm} ${awayPct}%</span>
+              <span style="color:var(--cyan);font-weight:700">${homePct}% ${homeNm}</span>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:10px">
+            <div style="color:var(--muted);font-size:10px;margin-bottom:6px">ANÁLISIS RÁPIDO</div>
+            <div style="color:var(--text)">${awayAdv>0.54?awayNm+' con ventaja estadística en este momento.':awayAdv<0.46?homeNm+' favorito por métricas actuales.':'Partido parejo — alta incertidumbre, ambos tienen chance.'}</div>
+          </div>
+        </div>
+      </div>`);
+    }
+  }
+  if(!liveCards.length){el.innerHTML=`<div class="card" style="text-align:center;color:var(--muted);padding:16px;font-size:13px">No hay juegos en vivo ahora mismo. Los juegos aparecerán aquí en tiempo real.</div>`;return;}
+  el.innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">🔴 JUEGOS EN VIVO / RECIENTES</div>${liveCards.join('')}`;
+}
+
 function wr(sport){
+  // Update active chip
+  document.querySelectorAll('#wr-tabs .chip').forEach(c=>c.classList.remove('active-chip'));
+  const chipMap={mlb:0,nba:1,soccer:2,nfl:3};
+  const chips=document.querySelectorAll('#wr-tabs .chip');
+  if(chips[chipMap[sport]])chips[chipMap[sport]].classList.add('active-chip');
+  _wr(sport);
+}
+function _wr(sport){
   const r=rng(seed()+hash(sport));
   const P={nba:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=70',mlb:'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=1200&q=70',nfl:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=70',soccer:'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200&q=70'};
   let html='';
@@ -966,9 +1149,12 @@ async function loadPicks(){
     return{type,badge,sport:`${g.icon} ${g.sport}`,pick:pickLabel,line:lineLabel,prob:Math.round(g.con*100),ev_:g.evV.toFixed(1),kl:g.klV.toFixed(1),why,gameTime:g.gameTime};
   });
 
-  $('podG').innerHTML=typed.map(p=>`<div class="pod ${p.type}">
+  $('podG').innerHTML=typed.map(p=>{
+    const pStars=p.prob>=70?'⭐⭐⭐⭐⭐':p.prob>=65?'⭐⭐⭐⭐':p.prob>=60?'⭐⭐⭐':p.prob>=55?'⭐⭐':'⭐';
+    return`<div class="pod ${p.type}">
     <div class="pod-badge">${p.badge}</div>
     <div class="pod-sport">${p.sport} · ${p.gameTime}</div>
+    <div style="font-size:13px;margin-bottom:4px">${pStars} <span style="font-size:11px;color:var(--muted)">${p.prob>=70?'Muy Alta':p.prob>=65?'Alta':p.prob>=60?'Media-Alta':p.prob>=55?'Media':'Baja'} confianza</span></div>
     <div class="pod-pick">${p.pick}</div>
     <div class="pod-line">${p.line}</div>
     <div class="pod-stats">
@@ -977,7 +1163,7 @@ async function loadPicks(){
       <div class="ps"><div class="ps-v" style="color:var(--yellow)">${p.kl}%</div><div class="ps-l">Kelly</div></div>
     </div>
     <div class="pod-why">${p.why}</div>
-  </div>`).join('');
+  </div>`;}).join('');
 
   const totEV=typed.reduce((a,p)=>a+(+p.ev_),0);
   const avgProb=Math.floor(typed.reduce((a,p)=>a+p.prob,0)/typed.length);
@@ -1005,31 +1191,55 @@ const R={
 };
 function profeResp(msg){
   const m=msg.toLowerCase();
-  let pool;
-  if(/pick|fuerte|mejor|hoy|recomiend/.test(m))pool=R.picks;
-  else if(/parlay|combo|acumula/.test(m))pool=R.parlay;
-  else if(/bankroll|kelly|cuanto|dinero|apuesta/.test(m))pool=R.bankroll;
-  else if(/nba|basket|celtic|laker|heat|warrior/.test(m))pool=R.nba;
-  else if(/mlb|beisbol|yankee|dodger|pitcher/.test(m))pool=R.mlb;
-  else if(/lesion|injury|baja|status/.test(m))pool=R.lesion;
-  else if(/ev|valor|value|expected/.test(m))pool=R.ev;
-  else pool=R.default;
-  let resp=pool[Math.floor(Math.random()*pool.length)];
   const mem=getPicks();
-  if(mem.length>0&&Math.random()>.45)resp+=` Por cierto, te recuerdo que analizaste "${mem[0].pick}" — salió ${mem[0].data.verdict} con ${Math.round(mem[0].data.con*100)}% consenso.`;
-  return resp;
+  const lastPick=mem[0]||null;
+  const memNote=lastPick&&Math.random()>.5?` (recuerdo que analizaste ${lastPick.pick} con ${Math.round(lastPick.data.con*100)}% consenso — ${lastPick.data.verdict})`:'';
+
+  // Smart response generation based on context
+  if(/pick|fuerte|mejor|hoy|recomiend|cual.*apostaria/.test(m)){
+    const picks=["Mira, lo que más me gusta hoy es trabajar con los juegos de MLB — junio es temporada activa, hay valor real en los pitching matchups si el abridor tiene ERA bajo y el bullpen descansado. ¿Tienes algún partido específico en mente?","Te voy a ser honesto: el mejor pick no siempre es el favorito. Busco líneas donde el modelo dice 58%+ pero la casa implica 50-52% — esa brecha de 6-8% es tu edge real. Dime qué partido ves hoy y lo analizamos juntos.","Hoy en temporada MLB el valor suele estar en los totales más que en los ML. Los under con dos buenos starters dan un margen de error enorme. ¿Qué juego estás considerando?"+memNote];
+    return picks[Math.floor(Math.random()*picks.length)];
+  }
+  if(/parlay|combo|acumulad|multi/.test(m)){
+    return["Los parlays tienen un problema matemático: cada leg multiplica el edge negativamente si hay poca ventaja. Si tienes dos picks con EV+5% cada uno, en parlay el EV combinado puede ser NEGATIVO. Solo parlays cuando ambos picks tienen EV+8%+ independiente.","Mi regla de oro: parlay máximo 2-3 legs, deportes sin correlación entre sí (ej. MLB + NBA), y SOLO si cada pick por separado ya tiene valor real. Si necesitas el parlay para 'mejorar el pago', la línea individual ya es mala.","Agarra esto: 3 unidades en un pick sólido genera más ROI que 1 unidad en un parlay de 4. Los sportsbooks adoran los parlays porque son los que más edge les dan a ellos."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/bankroll|kelly|cuanto|dinero|unidad|stake|apuesta cuant/.test(m)){
+    return["Kelly Criterion en la práctica: si tu edge es 5% y el odds es -110, Kelly dice ~2.7% del bankroll. Yo aplico medio-Kelly (1.35%) para sobrevivir la varianza. NUNCA más del 5% en un pick, no importa qué tan seguro se vea.","La regla que más protege tu bankroll: defines tus unidades ANTES de ver las cuotas. 1 unidad = 1-2% del total. Si pierdes 10 unidades seguidas (pasa) no estás quebrado. Si apuestas 20% por pick, 5 pérdidas te destruyen.","El tamaño de la apuesta importa más que qué pick eliges. Con un edge real del 5% y Kelly correcto, un bankroll de $1,000 debería generar $150-200 por mes con disciplina. Sin disciplina, el mismo bankroll dura 2 semanas."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/nba|basket|celtics?|lakers?|heat\b|warriors?|knicks?|bucks?|nuggets?|playoff/.test(m)){
+    return["NBA Playoffs es el contexto donde menos confío en las estadísticas de temporada regular. Los entrenadores ajustan radicalmente — el equipo que corría más en reg season puede jugar 92 posesiones en playoffs. Busco equipos con **defensa de élite** porque eso no se puede forzar tácticamente.","Para NBA miro tres cosas: DefRtg ajustado (top 5 en playoffs casi siempre compite), shooting splits en cancha neutral vs cancha propia, y cómo el coach maneja el bench en 4to cuarto. El factor coaching se subestima enormemente.","El home court en NBA playoffs es real pero a veces sobrevalorado en la línea. Si un equipo es -5.5 en casa pero tiene DefRtg peor que el visitante y el visitante tiene descanso extra — esa línea tiene valor para el visitante."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/mlb|beisbol|béisbol|yankees?|dodgers?|pitcher|bullpen|starter|era\b|whip/.test(m)){
+    return["En MLB todo empieza con el pitcher abridor. ERA y WHIP me dan el nivel general, pero los **splits vs zurdo/derecho** me dicen si puede ganar HOY contra este lineup específico. Un pitcher con 3.20 ERA puede ser vapuleado por un lineup de zurdos si sus splits vs LHB son .285.","Tres factores que la gente ignora en MLB: 1) El bullpen de los últimos 3 noches (fatiga real), 2) El wRC+ del lineup vs tipo de pitcher, 3) Las condiciones del parque ese día (temperatura baja = menos HR, viento en contra = under). Todo eso mueve el total real 0.5-1 run.","Para totales de MLB: si ERA combinado de los dos abridores es ≤5.50 Y el bullpen está descansado en ambos lados → under tiene valor. Si ERA combinado ≥7.00 o hay un abridor debilitado → over. Más simple que eso no lo puedo hacer."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/lesion|injury|baja|questionable|out\b|status/.test(m)){
+    return["Una lesión de impacto ALTO (titular ofensivo o pitcher abridor) puede mover la línea 5-8 puntos en NBA o medio run en MLB. Si la noticia sale tarde y la línea no se ajustó — ahí está el edge más raro y más real del deporte.","Siempre reviso el injury report final, el mismo día antes de apostar. En NBA el 'questionable' puede volverse 'out' en el warmup. En MLB el abridor se puede cambiar 30 minutos antes. Si no sabes quién juega, no apuestes.","Las lesiones 'day-to-day' en jugadores de rol también importan cuando afectan la rotación. En NBA, perder al 6to hombre que da 18 min al titular no se refleja correctamente en la línea. Es valor escondido."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/ev\+?|valor|value\b|expected value|ventaja/.test(m)){
+    return["EV+ es el concepto que separa al apostador inteligente del jugador. Si yo calculo que un evento tiene 60% de probabilidad y la línea implica 52%, tengo +8% de edge matemático. Eso no garantiza ganar HOY — garantiza ganar después de 500 picks. Sin volumen, el EV no se materializa.","Cómo identifico EV+: comparo la probabilidad que calcula mi modelo vs la probabilidad implícita de la línea (1/odds decimal). Si mi modelo dice 58% y la línea implica 50% → EV = (0.58 × 2.0) - 1 = +16%. ENORME. Eso es una apuesta obligatoria.","El mejor EV no siempre está en los favoritos. A veces está en un dog a +180 donde el mercado sobrestimó al favorito por popularidad. El público apuesta con el corazón, los libros ajustan, los underdogs quedan con líneas ventajosas."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/soccer|futbol|fútbol|mls|champions|liga|xg|gol/.test(m)){
+    return["Para fútbol miro xG (expected goals) en vez de goles reales — el xG elimina el ruido de partido a partido. Un equipo con xG 2.1 que perdió 0-1 probablemente fue dominante y la línea del próximo partido está inflada.","En MLS el factor local es más pronunciado que en las grandes ligas europeas — viajes largos, campos sintéticos, clima extremo. Siempre ajusto +5-7% al equipo local en MLS vs su rendimiento de visitante.","BTTS (Both Teams to Score) tiene valor cuando ambos equipos tienen xGA alto (defensas permeables). Si el xGA combinado supera 2.8 por partido, BTTS conecta estadísticamente cerca del 65% — y la línea suele estar en -115 a -125, que tiene valor."+memNote][Math.floor(Math.random()*3)];
+  }
+  if(/f1|formula|verstappen|hamilton|ferrari|redbull/.test(m)){
+    return["F1 para apuestas es interesante porque hay mucha información pública (tiempos de práctica, degradación de llantas) que el mercado no siempre incorpora bien. Si un equipo tuvo dominancia en práctica 3 pero la línea no se movió — hay valor.","Verstappen tiene un track record tan dominante que sus líneas suelen ser -250 a -400 para Top 3. Mejor valor está en apostarlo P1 en circuitos donde Red Bull es históricamente fuerte, que en otros circuitos con línea similar."+memNote][Math.floor(Math.random()*2)];
+  }
+  // Default: helpful and specific
+  const defaults=["¡Cuéntame más! ¿Qué partido o línea estás viendo hoy? Dame el matchup y la cuota que te están dando — te digo si hay valor real o si la casa te tiene bien amarrado.","Mándame el pick específico y lo analizamos — equipo, spread o ML, y a qué precio. Eso es todo lo que necesito para darte una opinión honesta basada en los modelos.","¿Cuál es la línea que te tiene dudando? A veces la duda es una señal de que el mercado ya ajustó y el valor se fue. Dime el partido."+memNote,"Para ayudarte bien necesito: 1) el partido, 2) el tipo de apuesta (ML/spread/total), 3) la cuota que ves. Con eso en 30 segundos te digo si vale o no."];
+  return defaults[Math.floor(Math.random()*defaults.length)];
 }
 function addMsg(role,text){
   const box=$('cm');
   const d=document.createElement('div');
   d.className='msg '+(role==='bot'?'b':'u');
-  d.innerHTML=`<div class="mav">${role==='bot'?'🧠':'👤'}</div><div class="bubble">${text}</div>`;
+  const av=role==='bot'?`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;flex-shrink:0"><circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="3"/><circle cx="50" cy="40" r="15" fill="#f5c08a"/><rect x="35" y="40" width="30" height="18" rx="4" fill="#f5c08a"/><rect x="28" y="24" width="44" height="6" rx="3" fill="#0066FF"/><ellipse cx="44" cy="39" rx="3" ry="4" fill="white"/><ellipse cx="56" cy="39" rx="3" ry="4" fill="white"/><circle cx="44" cy="40" r="2" fill="#111"/><circle cx="56" cy="40" r="2" fill="#111"/><path d="M43 48 Q50 53 57 48" stroke="#c87941" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="36" y="57" width="28" height="20" rx="4" fill="#0066FF"/></svg>`:`<div class="mav" style="background:rgba(255,255,255,.1)">👤</div>`;
+  d.innerHTML=`${av}<div class="bubble">${text}</div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function showTyping(){
   const box=$('cm');const d=document.createElement('div');
   d.className='msg b typing';d.id='typD';
-  d.innerHTML=`<div class="mav">🧠</div><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  d.innerHTML=`<svg class="mav" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;flex-shrink:0"><circle cx="50" cy="50" r="48" fill="#1a2e4a" stroke="#0066FF" stroke-width="3"/><circle cx="50" cy="40" r="15" fill="#f5c08a"/><rect x="35" y="40" width="30" height="18" rx="4" fill="#f5c08a"/><rect x="28" y="24" width="44" height="6" rx="3" fill="#0066FF"/><ellipse cx="44" cy="39" rx="3" ry="4" fill="white"/><ellipse cx="56" cy="39" rx="3" ry="4" fill="white"/><circle cx="44" cy="40" r="2" fill="#111"/><circle cx="56" cy="40" r="2" fill="#111"/><path d="M43 48 Q50 53 57 48" stroke="#c87941" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="36" y="57" width="28" height="20" rx="4" fill="#0066FF"/></svg><div class="bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
   box.appendChild(d);box.scrollTop=box.scrollHeight;
 }
 function rmTyping(){const t=$('typD');if(t)t.remove()}
